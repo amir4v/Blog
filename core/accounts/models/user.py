@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password
 class UserManager(BaseUserManager):
     def create(self, *args, **kwargs):
         raise NotImplementedError()
-        return super().create(**kwargs)
+        return super().create(*args, **kwargs)
     
     def _create_user(self, email, password, **extra_fields):
         """

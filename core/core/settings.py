@@ -38,7 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'rest_framework',
+    'djoser',
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    
     'accounts',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom Auth User Model
 AUTH_USER_MODEL = 'accounts.User'
+
+# Rest Framework
+REST_FRAMEWORK = {
+}
