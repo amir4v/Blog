@@ -16,3 +16,4 @@ profile avatar image size and weight
 check if user is not validated so can't access to site
 throttle and action_throttle
 following system
+Dockerizing
