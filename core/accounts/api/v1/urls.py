@@ -8,32 +8,42 @@ from . import views
 app_name = 'api-v1'
 
 urlpatterns = [
-    # path('users/', views.UserAPIView.as_view(), name='user-list'),
-    # path('users/me/', views., name='user-me'),
-    # path('users/profile/', views., name='user-profile'),
-    #
-    # path('users/reset-password/', views., name='user-reset-password'),
-    #
-    # path('logout/', views.logout, name='logout'),
+    # users/
+    # users/me/
+    # users/profile/
+    # users/reset-password/
+    # users/activation/<token>/
+    # users/activation-confirm/
+    # logout/
+    # ------SEPARATE------
+    # users/forgot-password/
+    # users/forgot-password-confirm/
+    # ------SEPARATE------
+    # users/reset-email/
+    # users/reset-email-confirm/
+    # ------SEPARATE------
+    # jwt/create/
+    # jwt/refresh/
+    # jwt/verify/
+]
+
+urlpatterns += [
+    path('users/activation/<str:token>/', views.UserActivationAPIView.as_view(), name='user-activation'),
+    path('users/activation-confirm/', views.UserActivationConfirmGenericAPIView.as_view(), name='user-activation-confirm'),
     
-    # path('users/activation/<token>/', views., name='user-activation'),
-    # path('users/activation-confirm/', views., name='user-activation-confirm'),
-    # ------SEPARATE------
-    # path('users/reset-email/', views., name='user-reset-email'),
-    # path('users/reset-email-confirm/', views., name='user-reset-email-confirm'),
-    # ------SEPARATE------
-    # path('users/forgot-password/', views., name='user-forgot-password'),
-    # path('users/forgot-password-confirm/', views., name='user-forgot-password-confirm'),
-        
-    # path('jwt/create/', views., name='jwt-create'),
-    # path('jwt/refresh/', views., name='jwt-refresh'),
-    # path('jwt/verify/', views., name='jwt-verify'),
+    path('users/forgot-password/', views.ForgotPasswordAPIView.as_view(), name='user-forgot-password'),
+    # path('users/forgot-password-confirm/', views.ForgotPasswordConfirmGenericAPIView.as_view(), name='user-forgot-password-confirm'),
+    
+    # path('users/reset-email/', views.ResetEmailAPIView.as_view(), name='user-reset-email'),
+    # path('users/reset-email-confirm/', views.ResetEmailConfirmGenericAPIView.as_view(), name='user-reset-email-confirm'),
 ]
 
 user_router = DefaultRouter()
 user_router.register('users', views.UserModelViewSet, basename='users')
 """
 users/
+    pre-register/
+    register/
     me/
     profile/
     reset-password/
@@ -45,8 +55,3 @@ profile_router.register('profile', views.ProfileModelViewSet, basename='profile'
 
 urlpatterns += user_router.urls
 urlpatterns += profile_router.urls
-
-urlpatterns += [
-    path('users/activation/<str:token>/', views.UserActivationAPIView.as_view(), name='user-activation'),
-    path('users/activation/confirm/', views.UserActivationConfirmAPIView.as_view(), name='user-activation-confirm'),
-]

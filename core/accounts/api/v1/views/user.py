@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.serializers import ValidationError
 
 from accounts.api.v1.serializers import user, profile
+from accounts.utils import send_activation_email
 
 
 User = get_user_model()
@@ -13,17 +15,39 @@ User = get_user_model()
 
 class UserModelViewSet(ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = user.UserSerializer
+    # serializer_class = user.UserSerializer
     
     def get_serializer_class(self):
         if self.action == 'reset_password':
             return user.ResetPasswordSerializer
-        return self.serializer_class
+        if self.action == 'pre_register':
+            return user.ActivationEmailSerializer
+        if self.action == 'register':
+            return user.FirstTimeSetPasswordSerializer
+        return user.UserSerializer
     
-    def post(self, request, *args, **kwargs):
+    @action(detail=False, methods=['post'], url_path='pre-register')
+    def pre_register(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # serializer.save()
+        
+        user = request.user
+        user.email = serializer.data.get('email')
+        send_activation_email(user=user)
+        
+        return Response('Activation email sent successfully.', status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'], url_path='register')
+    def register(self, request):
+        serializer = self.get_serializer(data=request.data, context={'user': request.user})
+        serializer.is_valid(raise_exception=True)
+        
+        return Response('Successfully set new password.', status=status.HTTP_200_OK)
+    
+    # TODO: permission denied
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         # TODO: check password
         User.objects.create_user(**serializer.validated_data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

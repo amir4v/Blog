@@ -42,3 +42,34 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise ValidationError('The Old-Password is incorrect!')
         
         return super().validate(attrs)
+
+
+class ActivationEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+
+
+class ActivationConfirmEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class FirstTimeSetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(max_length=128)
+    confirm_new_password = serializers.CharField(max_length=128)
+    
+    def validate(self, attrs):
+        user = self.context.get('user')
+        
+        if user.password:
+            raise ValidationError("You've already set password!")
+        
+        new_password = attrs.get('new_password')
+        confirm_new_password = attrs.get('confirm_new_password')
+        if new_password != confirm_new_password:
+            raise ValidationError('Passwords do not match!')
+        
+        user.set_password(new_password)
+        user.save()
+                
+        return super().validate(attrs)
