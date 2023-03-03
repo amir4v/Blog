@@ -159,6 +159,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Custom Auth User Model
 AUTH_USER_MODEL = 'accounts.User'
+AUTHENTICATION_BACKENDS = [
+    'accounts.models.authentication_backend.CustomAuthenticationBackend',
+]
 
 # Rest Framework
 REST_FRAMEWORK = {

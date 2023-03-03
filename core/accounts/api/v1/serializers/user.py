@@ -12,7 +12,7 @@ User = get_user_model()
 
 class UserModelSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
-    profile = ProfileModelSerializer()
+    profile = ProfileModelSerializer(read_only=True)
     
     class Meta:
         model = User

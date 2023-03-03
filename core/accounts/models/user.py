@@ -1,29 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
-    def create(self, *args, **kwargs):
-        raise NotImplementedError()
-        return super().create(*args, **kwargs)
-    
     def _create_user(self, email, password, **extra_fields):
         """
         Create and save a user with the given email, and password.
         """
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.password = make_password(password)
+        
+        if not extra_fields['is_superuser']:
+            validate_password(password)
+        user.set_password(password)
+        
         user.save(using=self._db)
         return user
+    
+    def create(self, *args, **kwargs):
+        return self.create_user(*args, **kwargs)
     
     def create_user(self, email, password, **extra_fields):
         extra_fields['is_superuser'] = False
         extra_fields['is_staff'] = False
         extra_fields['is_verified'] = False
         extra_fields['is_active'] = False
-        
         return self._create_user(email, password, **extra_fields)
     
     def create_superuser(self, email, password, **extra_fields):
@@ -31,7 +35,6 @@ class UserManager(BaseUserManager):
         extra_fields['is_staff'] = True
         extra_fields['is_verified'] = True
         extra_fields['is_active'] = True
-        
         return self._create_user(email, password, **extra_fields)
 
 
@@ -52,10 +55,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_dt = models.DateTimeField(auto_now=True)
     
     objects = UserManager()
-    
-    def clean(self) -> None:
-        # TODO: Check password hard-ness
-        return super().clean()
     
     def __str__(self):
         return self.email
