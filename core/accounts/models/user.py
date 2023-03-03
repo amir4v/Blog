@@ -13,9 +13,11 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         
-        if not extra_fields['is_superuser']:
-            validate_password(password)
-        user.set_password(password)
+        user.password = password
+        #
+        # if not extra_fields['is_superuser']:
+        #     validate_password(password)
+        # user.set_password(password)
         
         user.save(using=self._db)
         return user
@@ -39,7 +41,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # password
+    # password (8-32) -> .set_password('VALUE')
     # last_login
     
     USERNAME_FIELD = 'email'
@@ -55,6 +57,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_dt = models.DateTimeField(auto_now=True)
     
     objects = UserManager()
+    
+    def save(self, *args, **kwargs):
+        if len(self.password) != 88:
+            if not self.is_superuser:
+                validate_password(self.password)
+            self.set_password(self.password)
+        
+        return super().save(*args, **kwargs)
     
     def __str__(self):
         return self.email
