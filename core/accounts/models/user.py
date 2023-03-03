@@ -53,5 +53,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     objects = UserManager()
     
+    def clean(self) -> None:
+        # TODO: Check password hard-ness
+        return super().clean()
+    
     def __str__(self):
         return self.email

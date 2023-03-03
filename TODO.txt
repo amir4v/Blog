@@ -17,3 +17,10 @@ check if user is not validated so can't access to site
 throttle and action_throttle
 following system
 Dockerizing
+commenting
+permissions > groups > user > profile
+background process
+flake8
+black
+cache
+pages, home, custom home filter posts, posts in home, new, hit posts, ...

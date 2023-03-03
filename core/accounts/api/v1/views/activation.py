@@ -11,6 +11,7 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 from accounts.api.v1.serializers import user
+from accounts.api.v1.serializers import *
 from accounts.utils import send_activation_email
 
 
@@ -62,7 +63,7 @@ class UserActivationAPIView(APIView):
 
 
 class UserActivationConfirmGenericAPIView(GenericAPIView):
-    serializer_class = user.ActivationConfirmEmailSerializer
+    serializer_class = UserActivationConfirmSerializer
     
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

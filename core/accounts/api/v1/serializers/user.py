@@ -1,22 +1,42 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-from accounts.api.v1.serializers.profile import ProfileSerializer
+from accounts.api.v1.serializers.profile import ProfileModelSerializer
 
 
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserModelSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
-    profile = ProfileSerializer()
+    profile = ProfileModelSerializer()
     
     class Meta:
         model = User
         fields = ['email', 'password', 'profile']
         read_only_fields = ['profile']
+
+
+class LoginModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+    
+    def validate(self, attrs):
+        super_validate = super().validate(attrs)
+        
+        user = get_object_or_404(User, email=attrs.get('email'))
+        user.check_password(attrs.get('password'))
+        self.user = user
+        
+        return super_validate
+    
+    @property
+    def user(self):
+        return self.user
 
 
 class ResetPasswordSerializer(serializers.Serializer):
@@ -42,16 +62,6 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise ValidationError('The Old-Password is incorrect!')
         
         return super().validate(attrs)
-
-
-class ActivationEmailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['email']
-
-
-class ActivationConfirmEmailSerializer(serializers.Serializer):
-    email = serializers.EmailField()
 
 
 class FirstTimeSetPasswordSerializer(serializers.Serializer):

@@ -10,7 +10,7 @@ class Profile(models.Model):
     bio = models.TextField(blank=True, null=True, default=None)
     birth_date = models.DateField(blank=True, null=True, default=None)
     location = models.CharField(max_length=64, blank=True, null=True, default=None)
-    status = models.CharField(max_length=32, blank=True, null=True, default=None) # Emoji
+    status = models.CharField(max_length=32, blank=True, null=True, default=None) # emoji
     avatar = models.ImageField(upload_to='media/user/profile/avatar', blank=True, null=True, default=None)
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -25,7 +25,7 @@ class Profile(models.Model):
         return f"{self.user} - {self.name or ':)'}"
 
 
-class Follow(models.Model):
+class Follow(models.Model): # TODO: Convert to many to many field
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followings')
     follows = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followers')
     

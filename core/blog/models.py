@@ -20,6 +20,9 @@ class Post(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
     
+    who_saved = models.ManyToManyField(Profile, related_name='posts_saved')
+    who_liked = models.ManyToManyField(Profile, related_name='posts_liked')
+    
     def __str__(self):
         if self.title:
             return self.title[:64] + '...'
@@ -33,29 +36,7 @@ class Comment(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     
+    who_liked = models.ManyToManyField(Profile, related_name='comments_liked')
+    
     def __str__(self):
         return self.comment[:64] + '...'
-
-
-class PostLike(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts_likes')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='who_liked')
-    
-    def __str__(self):
-        return f'{self.profile} -> {self.post}'
-
-
-class CommentLike(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments_likes')
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='who_liked')
-    
-    def __str__(self):
-        return f'{self.profile} -> {self.comment}'
-
-
-class Save(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='saved')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='who_saved')
-    
-    def __str__(self):
-        return f'{self.profile} -> {self.post}'

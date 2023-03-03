@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import Profile
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileModelSerializer(serializers.ModelSerializer):
     user = serializers.CharField(max_length=256, source='user.email')
     
     class Meta:
