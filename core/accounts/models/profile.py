@@ -12,7 +12,7 @@ class Profile(models.Model):
     birth_date = models.DateField(blank=True, null=True, default=None)
     location = models.CharField(max_length=64, blank=True, null=True, default=None)
     status = models.CharField(max_length=32, blank=True, null=True, default=None) # emoji
-    avatar = models.ImageField(upload_to='media/user/profile/avatar', blank=True, null=True, default=None)
+    avatar = models.CharField(max_length=256, blank=True, null=True, default=None)
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     

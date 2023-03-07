@@ -1,4 +1,5 @@
 from uuid import uuid4
+import os
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -57,17 +58,34 @@ def send_reset_email_email(user):
     )
 
 
-def upload_to(file, base_dir=settings.MEDIA_ROOT, dir='', filename=None, file_extension=None):
-    dir = dir.strip('/')
-    name = uuid4()
-    ext = ''
-    filename = name + ext
-    path = f'{base_dir}{dir}/{filename}'
+def upload(uploaded_file, dir):
+    dir = ['/media'] + dir
+    
+    name = str(uuid4())
+    ext = uploaded_file.name.split('.')[-1] or 'unknown'
+    filename = f'{name}.{ext}'
+    
+    path = os.path.join(settings.MEDIA_ROOT, *dir[1:], filename)
     f = open(path, 'wb')
-    f.write(file)
+    file_bytes = uploaded_file.file.read()
+    f.write(file_bytes)
     f.close()
-    dir = settings.MEDIA_URL.strip('/') + f'/{dir}'
-    return f'{dir}/{filename}'
+    
+    dir.append(filename)
+    path = '/'.join(dir)
+    return path
+
+
+def upload_avatar(avatar):
+    dir = ['user', 'profile', 'avatar']
+    path = upload(avatar, dir)
+    return path
+
+
+def upload_banner(banner):
+    dir = ['post', 'banner']
+    path = upload(banner, dir)
+    return path
 
 
 class IsNotAuthenticated(permissions.BasePermission):

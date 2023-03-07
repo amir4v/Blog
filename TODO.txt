@@ -26,3 +26,4 @@ cache
 pages, home, custom home filter posts, posts in home, new, hit posts, ...
 validation and checking
 blogger-group: .
+upload images

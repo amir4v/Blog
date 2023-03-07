@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser
 
 from blog.models import *
 from blog.api.v1.serializers import *
@@ -13,6 +14,7 @@ from accounts.api.v1.serializers.profile import ProfileModelSerializer
 
 class PostModelViewSet(ModelViewSet):
     serializer_class = PostModelSerializer
+    parser_classes = [MultiPartParser]
     
     def get_permissions(self):
         if self.action not in ['list']:

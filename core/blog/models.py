@@ -15,7 +15,7 @@ class Category(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=128, blank=True, null=True, default=None)
     content = models.TextField(blank=False, null=False)
-    banner = models.ImageField(upload_to='media/post/banner', blank=True, null=True, default=None)
+    banner = models.CharField(max_length=256, blank=True, null=True, default=None)
     
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
