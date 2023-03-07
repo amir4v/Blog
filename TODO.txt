@@ -1,29 +1,17 @@
-permission group user profile
-follow 
-category
-    post
-        save
-        like
-        comment
-            like
-
-check password with validator when create and update
-create default groups
-add new users to blog_owner group
-groups: blog_owner, editor, writer, reader
-validation email
-profile avatar image size and weight
-check if user is not validated so can't access to site
-throttle and action_throttle
-following system
 Dockerizing
-commenting
-permissions > groups > user > profile
+
+throttle and action_throttle and middlewares
+
 background process
-flake8
-black
 cache
+
 pages, home, custom home filter posts, posts in home, new, hit posts, ...
+
+profile avatar image size and weight checking
 validation and checking
-blogger-group: .
-upload images
+
+black
+flake8
+
+commenting
+refactor
