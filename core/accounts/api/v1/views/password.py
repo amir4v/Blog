@@ -7,22 +7,27 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, RetrieveAPIView, ListAPIView
 from rest_framework_simplejwt.state import api_settings
+from rest_framework import permissions
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 from accounts.api.v1.serializers import *
-from accounts.utils import send_reset_password_email
+from accounts.utils import send_reset_password_email, IsNotAuthenticated
 
 
 User = get_user_model()
 
 
 class ForgotPasswordAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
     def get(self, request):
         send_reset_password_email(user=request.user)
         return Response('Reset-Password email sent successfully.', status=status.HTTP_200_OK)
 
 class ForgotPasswordVerifyAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    
     def get(self, request, token):
         try:
             _token = jwt.decode(
@@ -62,6 +67,8 @@ class ForgotPasswordVerifyAPIView(APIView):
 
 
 class ForgotPasswordConfirmGenericAPIView(GenericAPIView):
+    permission_classes = [IsNotAuthenticated]
+    
     serializer_class = ForgotPasswordConfirmEmailSerializer    
     
     def post(self, request):

@@ -24,3 +24,43 @@ class Command(BaseCommand):
         print(content_type)
         print(group)
         print(group.permissions.all()[0])
+
+
+# Currently we just have [user and [admin
+#                        [blogger, [superuser
+"""
+User
+    add self
+    view self
+    change self
+    delete self
+    -
+    login
+    logout
+    change password
+    change email
+Profile
+    view self
+    change self
+Category
+    add
+    view
+    change
+    delete
+Post
+    add
+    view
+    change
+    delete
+    -
+    save
+    like
+    add comment
+Comment
+    add
+    view
+    change
+    delete
+    -
+    like
+"""

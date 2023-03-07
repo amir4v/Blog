@@ -7,18 +7,21 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, RetrieveAPIView, ListAPIView
 from rest_framework_simplejwt.state import api_settings
+from rest_framework import permissions
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 from accounts.api.v1.serializers import user
 from accounts.api.v1.serializers import *
-from accounts.utils import send_activation_email
+from accounts.utils import send_activation_email, IsNotAuthenticated
 
 
 User = get_user_model()
 
 
 class UserActivationAPIView(APIView):
+    permission_classes = [IsNotAuthenticated]
+    
     def get(self, request, token):
         try:
             _token = jwt.decode(
@@ -64,6 +67,7 @@ class UserActivationAPIView(APIView):
 
 class UserActivationConfirmGenericAPIView(GenericAPIView):
     serializer_class = UserActivationConfirmSerializer
+    permission_classes = [IsNotAuthenticated]
     
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

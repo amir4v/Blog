@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, RetrieveAPIView, ListAPIView
 from rest_framework_simplejwt.state import api_settings
+from rest_framework import permissions
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
@@ -20,6 +21,7 @@ User = get_user_model()
 
 class ResetEmailGenericAPIView(GenericAPIView):
     serializer_class = ResetEmailSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
     @csrf_exempt
     def post(self, request):
@@ -36,6 +38,8 @@ class ResetEmailGenericAPIView(GenericAPIView):
 
 
 class ResetEmailVerifyAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
     def get(self, request, token):
         try:
             _token = jwt.decode(

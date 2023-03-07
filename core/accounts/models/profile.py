@@ -16,22 +16,28 @@ class Profile(models.Model):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     
+    followers = models.ManyToManyField('Profile', related_name='followings')
+    
+    """
     def do_i_follow_you(self, profile):
         return self.followings.filter(follows=profile).exists()
     
     def do_you_follow_me(self, profile):
         return self.followers.filter(profile=profile).exists()
+    """
     
     def __str__(self):
         return f"{self.user} - {self.name or ':)'}"
 
 
+"""
 class Follow(models.Model): # TODO: Convert to many to many field
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followings')
     follows = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followers')
     
     def __str__(self):
         return f'{self.profile} -> {self.follows}'
+"""
 
 
 @receiver(post_save, sender=User)

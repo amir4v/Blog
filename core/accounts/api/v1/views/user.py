@@ -6,16 +6,30 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework import permissions
 
 from accounts.api.v1.serializers import *
-from accounts.utils import send_activation_email
+from accounts.utils import send_activation_email, IsNotAuthenticated
 
 
 User = get_user_model()
 
 
 class UserModelViewSet(ModelViewSet):
-    queryset = User.objects.all()
+    def get_queryset(self):
+        if self.action in ['pre_register']:
+            return None
+        if self.action in ['register', 'me', 'profile', 'reset_password', 'logout']:
+            pk = self.request.user.pk
+            return User.objects.filter(pk=pk)
+        return User.objects.all()
+    
+    def get_permissions(self):
+        if self.action in ['pre_register']:
+            return [IsNotAuthenticated()]
+        if self.action in ['register', 'me', 'profile', 'reset_password', 'logout']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
     
     def get_serializer_class(self):
         if self.action == 'pre_register':
@@ -70,6 +84,7 @@ class UserModelViewSet(ModelViewSet):
     def reset_password(self, request):
         serializer = self.get_serializer(data=request.data, context={'user': request.user})
         serializer.is_valid(raise_exception=True)
+        Logout(request)
         return Response('Password changed successfully.', status=status.HTTP_200_OK)
     
     @action(detail=False)
