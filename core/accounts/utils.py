@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import permissions
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+from celery import shared_task
 
 
 def get_activation_token(user):
@@ -19,6 +20,7 @@ def get_activation_token(user):
     return str(access_token)
 
 
+@shared_task
 def send_activation_email(user):
     address = 'http://127.0.0.1:8000/accounts/api/v1/users/activation'
     token = get_activation_token(user)
@@ -32,6 +34,7 @@ def send_activation_email(user):
     )
 
 
+@shared_task
 def send_reset_password_email(user):
     address = 'http://127.0.0.1:8000/accounts/api/v1/users/forgot-password-verify'
     token = get_activation_token(user)
@@ -45,6 +48,7 @@ def send_reset_password_email(user):
     )
 
 
+@shared_task
 def send_reset_email_email(user):
     address = 'http://127.0.0.1:8000/accounts/api/v1/users/reset-email-verify'
     token = get_activation_token(user)
@@ -76,12 +80,14 @@ def upload(uploaded_file, dir):
     return path
 
 
+@shared_task
 def upload_avatar(avatar):
     dir = ['user', 'profile', 'avatar']
     path = upload(avatar, dir)
     return path
 
 
+@shared_task
 def upload_banner(banner):
     dir = ['post', 'banner']
     path = upload(banner, dir)

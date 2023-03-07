@@ -1,6 +1,12 @@
 django==3.2
+gunicorn
 Pillow
 djangorestframework
 djoser
 djangorestframework_simplejwt
 drf-yasg
+redis
+celery
+celery[redis]
+django-celery
+psycopg2-binary
