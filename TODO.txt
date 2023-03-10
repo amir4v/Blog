@@ -2,21 +2,12 @@ Dockerizing
 
 throttle and action_throttle and middlewares
 
-two factor authentication
-
-background process
 cache
 
-pages, home, custom home filter posts, posts in home, new, hit posts, ...
-
 profile avatar image size and weight checking
-validation and checking
 
 black
 flake8
 
 commenting
 refactor
-
-read_only or read_only_fields
-seen in post model

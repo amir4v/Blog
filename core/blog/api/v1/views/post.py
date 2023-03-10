@@ -27,6 +27,12 @@ class PostModelViewSet(ModelViewSet):
             return Post.objects.filter(profile=profile)
         return Post.objects.all()
     
+    def get_object(self):
+        obj = super().get_object()
+        obj.seen += 1
+        obj.save()
+        return obj
+    
     @action(detail=True, methods=['get'], url_path='who-liked')
     def who_liked(self, request, pk):
         post = get_object_or_404(self.get_queryset(), pk=pk)
