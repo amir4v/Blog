@@ -4,7 +4,7 @@ from .user import User
 
 
 class CustomAuthenticationBackend(ModelBackend):
-    def authenticate(self, request, email=None, username=None, password=None, **kwargs):
+    def authenticate(self, request, email=None, password=None, username=None, **kwargs):
         if email is None and username is None:
             return None
         if password is None:

@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 
-from accounts.utils import user_6_digit
+from core.utils import user_6_digit, validate_username
 
 
 class UserManager(BaseUserManager):
@@ -43,13 +43,13 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # password (8-32) -> .set_password('VALUE')
+    # password (8-64) -> .set_password('VALUE')
     # last_login
     
     USERNAME_FIELD = 'email'
     
-    email = models.EmailField(unique=True, db_index=True, blank=False, null=False)
-    username = models.CharField(max_length=32, unique=True, db_index=True, blank=False, null=False, default=user_6_digit)
+    email = models.EmailField(unique=True, db_index=True, blank=False, null=False) # max_length=256
+    username = models.CharField(max_length=32, unique=True, db_index=True, blank=False, null=False, default=user_6_digit) # length=6-32
     
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -66,6 +66,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             if not self.is_superuser:
                 validate_password(self.password)
             self.set_password(self.password)
+        
+        self.username = validate_username(self.username)
         
         return super().save(*args, **kwargs)
     

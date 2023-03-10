@@ -1,6 +1,8 @@
 from uuid import uuid4
 import os
 from random import randint
+import string
+import re
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -11,6 +13,7 @@ from django.utils.deconstruct import deconstructible
 from rest_framework_simplejwt.state import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import permissions
+from rest_framework.serializers import ValidationError
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 from celery import shared_task
@@ -130,3 +133,28 @@ class RangeValueValidator(BaseValidator):
         cleaned = self.clean(value)
         MinValueValidator(self.min).__call__(cleaned)
         MaxValueValidator(self.max).__call__(cleaned)
+
+
+def validate_username(username, null=True):
+    username = username.lower().strip(string.whitespace)
+    
+    if null and len(username) == 0:
+        return None
+    
+    length = len(username)
+    if length < 6 or length > 32:
+        raise ValidationError('Username length must be between 6 and 32')
+    
+    allowed_chars = string.ascii_lowercase + string.digits + '._'
+    pattern = rf'^[{allowed_chars}]{6,32}$'
+    
+    if username.startswith('.') or username.startswith('_') \
+        or \
+        username.endswith('.') or username.endswith('_'):
+            raise ValidationError('Username cannot start or end with . or _')
+    
+    match = bool(re.match(pattern, username))
+    if not match:
+        raise ValidationError('Username must contain these allowed characters: a-z , 0-9 , . , _')
+    
+    return username

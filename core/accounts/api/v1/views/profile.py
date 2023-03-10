@@ -9,7 +9,7 @@ from rest_framework import permissions
 
 from accounts.api.v1.serializers import *
 from accounts.models import Profile
-from accounts.utils import IsNotAuthenticated
+from core.utils import IsNotAuthenticated
 
 
 User = get_user_model()

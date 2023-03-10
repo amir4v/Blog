@@ -1,38 +1,43 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from accounts.api.v1.serializers.profile import ProfileModelSerializer
+from core.utils import validate_username
 
 
 User = get_user_model()
 
 
 class UserModelSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=128, write_only=True)
+    username = serializers.CharField(allow_blank=True, max_length=32)
+    password = serializers.CharField(min_length=8, max_length=64, write_only=True)
     profile = ProfileModelSerializer(read_only=True)
     
     class Meta:
         model = User
-        fields = ['email', 'password', 'profile']
+        fields = ['email', 'username', 'password', 'profile']
         read_only_fields = ['profile']
+    
+    def validate(self, attrs):
+        username = validate_username(attrs.get('username'))
+        attrs['username'] = username
+        return super().validate(attrs)
 
 
 class LoginModelSerializer(serializers.ModelSerializer):
+    email_or_username = serializers.CharField(max_length=256)
+    
     class Meta:
         model = User
-        fields = ['email', 'password']
+        fields = ['email_or_username', 'password']
     
     def validate(self, attrs):
-        super_validate = super().validate(attrs)
-        
-        user = get_object_or_404(User, email=attrs.get('email'))
-        user.check_password(attrs.get('password'))
-        self.user = user
-        
-        return super_validate
+        self.user = authenticate(self.request, attrs.get('email_or_username'), attrs.get('password'))
+        attrs.pop('email_or_username', None)
+        return super().validate(attrs)
     
     @property
     def user(self):
@@ -40,9 +45,9 @@ class LoginModelSerializer(serializers.ModelSerializer):
 
 
 class ResetPasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(max_length=128)
-    new_password = serializers.CharField(max_length=128)
-    confirm_new_password = serializers.CharField(max_length=128)
+    old_password = serializers.CharField(min_length=8, max_length=64)
+    new_password = serializers.CharField(min_length=8, max_length=64)
+    confirm_new_password = serializers.CharField(min_length=8, max_length=64)
     
     def validate(self, attrs):
         user = self.context.get('user')
@@ -59,25 +64,26 @@ class ResetPasswordSerializer(serializers.Serializer):
             user.set_password(new_password)
             user.save()
         else:
-            raise ValidationError('The Old-Password is incorrect!')
+            raise ValidationError('Old-Password is incorrect!')
         
         return super().validate(attrs)
 
 
 class ResetUsernameSerializer(serializers.Serializer):
-    new_username = serializers.CharField(max_length=32)
+    new_username = serializers.CharField(min_length=6, max_length=32)
     
     def validate(self, attrs):
+        username = validate_username(attrs.get('username'))
+        attrs['username'] = username
         user = self.context.get('user')
-        user.username = attrs.get('username')
+        user.username = username
         user.save()
-        
         return super().validate(attrs)
 
 
 class FirstTimeSetPasswordSerializer(serializers.Serializer):
-    new_password = serializers.CharField(max_length=128)
-    confirm_new_password = serializers.CharField(max_length=128)
+    new_password = serializers.CharField(min_length=8, max_length=64)
+    confirm_new_password = serializers.CharField(min_length=8, max_length=64)
     
     def validate(self, attrs):
         user = self.context.get('user')

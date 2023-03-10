@@ -13,7 +13,7 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 from accounts.api.v1.serializers import *
-from accounts.utils import send_reset_email_email
+from core.utils import send_reset_email_email
 
 
 User = get_user_model()

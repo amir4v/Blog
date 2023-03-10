@@ -3,7 +3,7 @@ from django.core import validators
 from rest_framework import serializers
 
 from blog.models import *
-from accounts.utils import upload_banner
+from core.utils import upload_banner
 
 
 class PostModelSerializer(serializers.ModelSerializer):

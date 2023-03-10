@@ -13,7 +13,7 @@ from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 from accounts.api.v1.serializers import user
 from accounts.api.v1.serializers import *
-from accounts.utils import send_activation_email, IsNotAuthenticated
+from core.utils import send_activation_email, IsNotAuthenticated
 
 
 User = get_user_model()
