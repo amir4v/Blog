@@ -17,7 +17,7 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     
     name = serializers.CharField(allow_blank=True, max_length=128)
     bio = serializers.CharField(allow_blank=True, max_length=1000)
-    birth_date = serializers.DateField(allow_blank=True)
+    birth_date = serializers.DateField() # allow_blank=True
     location = serializers.CharField(allow_blank=True, max_length=64)
     status = serializers.CharField(allow_blank=True, max_length=32)
     

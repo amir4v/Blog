@@ -35,7 +35,7 @@ class LoginModelSerializer(serializers.ModelSerializer):
         fields = ['email_or_username', 'password']
     
     def validate(self, attrs):
-        self.user = authenticate(self.request, attrs.get('email_or_username'), attrs.get('password'))
+        self.user = authenticate(self.context.get('request'), attrs.get('email_or_username'), attrs.get('password'))
         attrs.pop('email_or_username', None)
         return super().validate(attrs)
     

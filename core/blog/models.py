@@ -4,7 +4,7 @@ from accounts.models import Profile
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=64, blank=False, null=False)
+    name = models.CharField(max_length=128, blank=False, null=False)
     
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='categories')
     
@@ -36,7 +36,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    comment = models.CharField(max_length=1024, blank=False, null=False)
+    comment = models.CharField(max_length=1000, blank=False, null=False)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

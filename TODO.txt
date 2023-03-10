@@ -17,3 +17,6 @@ flake8
 
 commenting
 refactor
+
+read_only or read_only_fields
+seen in post model
