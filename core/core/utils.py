@@ -145,14 +145,14 @@ def validate_username(username, null=True):
     if length < 6 or length > 32:
         raise ValidationError('Username length must be between 6 and 32')
     
-    allowed_chars = string.ascii_lowercase + string.digits + '._'
-    pattern = rf'^[{allowed_chars}]{6,32}$'
-    
     if username.startswith('.') or username.startswith('_') \
         or \
         username.endswith('.') or username.endswith('_'):
             raise ValidationError('Username cannot start or end with . or _')
     
+    allowed_chars = string.ascii_lowercase + string.digits + '._'
+    pattern = rf'^[{allowed_chars}]{{6,32}}$'
+    print(pattern)
     match = bool(re.match(pattern, username))
     if not match:
         raise ValidationError('Username must contain these allowed characters: a-z , 0-9 , . , _')

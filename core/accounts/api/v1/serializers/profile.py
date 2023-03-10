@@ -15,11 +15,11 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     email = serializers.CharField(max_length=256, source='user.email', read_only=True)
     username = serializers.CharField(max_length=32, source='user.username', read_only=True)
     
-    name = serializers.CharField(allow_blank=True, max_length=128)
-    bio = serializers.CharField(allow_blank=True, max_length=1000)
-    birth_date = serializers.DateField() # allow_blank=True
-    location = serializers.CharField(allow_blank=True, max_length=64)
-    status = serializers.CharField(allow_blank=True, max_length=32)
+    name = serializers.CharField(required=False, max_length=128)
+    bio = serializers.CharField(required=False, max_length=1000)
+    birth_date = serializers.DateField() # required=False
+    location = serializers.CharField(required=False, max_length=64)
+    status = serializers.CharField(required=False, max_length=32)
     
     profile_avatar = serializers.ImageField(write_only=True, required=False, validators=[
         validators.FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])

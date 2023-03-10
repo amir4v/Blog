@@ -7,7 +7,7 @@ from core.utils import upload_banner
 
 
 class PostModelSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(allow_blank=True, max_length=128)
+    title = serializers.CharField(required=False, max_length=128)
     content = serializers.CharField(min_length=1)
     
     banner_image = serializers.ImageField(write_only=True, required=False, validators=[
