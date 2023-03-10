@@ -4,6 +4,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 
+from accounts.utils import user_6_digit
+
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -47,6 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     
     email = models.EmailField(unique=True, db_index=True, blank=False, null=False)
+    username = models.CharField(max_length=32, unique=True, db_index=True, blank=False, null=False, default=user_6_digit)
     
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

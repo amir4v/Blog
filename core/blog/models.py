@@ -20,6 +20,11 @@ class Post(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
     
+    seen = models.IntegerField(default=0)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     who_saved = models.ManyToManyField(Profile, related_name='posts_saved')
     who_liked = models.ManyToManyField(Profile, related_name='posts_liked')
     
@@ -32,6 +37,9 @@ class Post(models.Model):
 
 class Comment(models.Model):
     comment = models.CharField(max_length=1024, blank=False, null=False)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')

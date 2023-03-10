@@ -40,6 +40,7 @@ user/
     me/
     profile/
     reset-password/
+    reset-username/
     logout/
 """
 

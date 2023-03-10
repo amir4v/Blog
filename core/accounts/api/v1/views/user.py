@@ -40,6 +40,8 @@ class UserModelViewSet(ModelViewSet):
             return ProfileModelSerializer
         if self.action == 'reset_password':
             return ResetPasswordSerializer
+        if self.action == 'reset_username':
+            return ResetUsernameSerializer
         return UserModelSerializer
     
     def post(self, request):
@@ -86,6 +88,12 @@ class UserModelViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         Logout(request)
         return Response('Password changed successfully.', status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'], url_path='reset-username')
+    def reset_username(self, request):
+        serializer = self.get_serializer(data=request.data, context={'user': request.user})
+        serializer.is_valid(raise_exception=True)
+        return Response('Username changed successfully.', status=status.HTTP_200_OK)
     
     @action(detail=False)
     def logout(self, request):

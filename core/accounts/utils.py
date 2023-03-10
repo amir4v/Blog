@@ -1,5 +1,6 @@
 from uuid import uuid4
 import os
+from random import randint
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -97,3 +98,7 @@ def upload_banner(banner):
 class IsNotAuthenticated(permissions.BasePermission):
     def has_permission(self, request, view):
         return str(request.user) == 'AnonymousUser'
+
+
+def user_6_digit():
+    return f'user{randint(100_000, 1_000_000)}'

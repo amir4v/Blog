@@ -17,5 +17,6 @@ router.register('category', CategoryModelViewSet, basename='category')
 router.register('post', PostModelViewSet, basename='post')
 router.register('comment', CommentModelViewSet, basename='comment')
 router.register('blogger', BloggerViewSet, basename='blogger')
+router.register('pages', PagesViewSet, basename='pages')
 
 urlpatterns += router.urls

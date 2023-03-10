@@ -64,6 +64,17 @@ class ResetPasswordSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 
+class ResetUsernameSerializer(serializers.Serializer):
+    new_username = serializers.CharField(max_length=32)
+    
+    def validate(self, attrs):
+        user = self.context.get('user')
+        user.username = attrs.get('username')
+        user.save()
+        
+        return super().validate(attrs)
+
+
 class FirstTimeSetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(max_length=128)
     confirm_new_password = serializers.CharField(max_length=128)

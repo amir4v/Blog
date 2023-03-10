@@ -10,14 +10,15 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='user.id', read_only=True)
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     user_email = serializers.CharField(max_length=256, source='user.email', read_only=True)
+    user_username = serializers.CharField(max_length=32, source='user.username', read_only=True)
     
     profile_avatar = serializers.ImageField(write_only=True, required=False)
     avatar = serializers.CharField(max_length=256, read_only=True)
     
     class Meta:
         model = Profile
-        fields = ['id', 'name', 'bio', 'birth_date', 'location', 'status', 'profile_avatar', 'avatar', 'user_id', 'user_email']
-        read_only_fields = ['id', 'user_id', 'user_email']
+        fields = ['id', 'name', 'bio', 'birth_date', 'location', 'status', 'profile_avatar', 'avatar', 'user_id', 'user_email', 'user_username']
+        read_only_fields = ['id', 'user_id', 'user_email', 'avatar', 'user_username']
     
     def validate(self, attrs):
         avatar = attrs.get('profile_avatar', None)
