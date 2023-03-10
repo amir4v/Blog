@@ -1,3 +1,5 @@
+from django.core import validators
+
 from rest_framework import serializers
 
 from accounts.models import Profile
@@ -12,7 +14,9 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     user_email = serializers.CharField(max_length=256, source='user.email', read_only=True)
     user_username = serializers.CharField(max_length=32, source='user.username', read_only=True)
     
-    profile_avatar = serializers.ImageField(write_only=True, required=False)
+    profile_avatar = serializers.ImageField(write_only=True, required=False, validators=[
+        validators.FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])
+    ])
     avatar = serializers.CharField(max_length=256, read_only=True)
     
     class Meta:

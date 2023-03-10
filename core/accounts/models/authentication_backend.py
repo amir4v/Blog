@@ -4,13 +4,24 @@ from .user import User
 
 
 class CustomAuthenticationBackend(ModelBackend):
-    def authenticate(self, request, username, password):
+    def authenticate(self, request, email=None, username=None, password=None, **kwargs):
+        if email is None and username is None:
+            return None
+        if password is None:
+            return None
+        
+        if username is None:
+            username = email
+        
         try:
-            user = User.objects.get(email=username)
-            success = user.check_password(password)
-            if success:
+            if '@' in username:
+                user = User.objects.get(email=username)
+            else:
+                user = User.objects.get(username=username)
+            
+            if user.check_password(password):
                 return user
+            else:
+                return None
         except User.DoesNotExist:
             return None
-        # For when there is a user but the password is incorrect.
-        return None

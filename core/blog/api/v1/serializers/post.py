@@ -1,3 +1,5 @@
+from django.core import validators
+
 from rest_framework import serializers
 
 from blog.models import *
@@ -5,7 +7,9 @@ from accounts.utils import upload_banner
 
 
 class PostModelSerializer(serializers.ModelSerializer):
-    banner_image = serializers.ImageField(write_only=True, required=False)
+    banner_image = serializers.ImageField(write_only=True, required=False, validators=[
+        validators.FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])
+    ])
     banner = serializers.CharField(max_length=256, read_only=True)
     absolute_url = serializers.SerializerMethodField()
     

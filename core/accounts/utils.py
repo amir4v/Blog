@@ -5,6 +5,8 @@ from random import randint
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.validators import BaseValidator, MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
+from django.utils.deconstruct import deconstructible
 
 from rest_framework_simplejwt.state import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
@@ -102,3 +104,29 @@ class IsNotAuthenticated(permissions.BasePermission):
 
 def user_6_digit():
     return f'user{randint(100_000, 1_000_000)}'
+
+
+class RangeLengthValidator(BaseValidator):
+    def __init__(self, min, max, message=None):
+        self.min = min
+        self.max = max
+        if message:
+            self.message = message
+    
+    def __call__(self, value):
+        cleaned = self.clean(value)
+        MinLengthValidator(self.min).__call__(cleaned)
+        MaxLengthValidator(self.max).__call__(cleaned)
+
+
+class RangeValueValidator(BaseValidator):
+    def __init__(self, min, max, message=None):
+        self.min = min
+        self.max = max
+        if message:
+            self.message = message
+    
+    def __call__(self, value):
+        cleaned = self.clean(value)
+        MinValueValidator(self.min).__call__(cleaned)
+        MaxValueValidator(self.max).__call__(cleaned)
