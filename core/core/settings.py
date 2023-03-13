@@ -158,6 +158,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_FILE_PATH = BASE_DIR / 'EMAILS'
 
 # Custom Auth User Model
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = LOGIN_URL
+#
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = [
     'accounts.models.authentication_backend.CustomAuthenticationBackend',
