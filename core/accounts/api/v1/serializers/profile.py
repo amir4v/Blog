@@ -17,7 +17,7 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     
     name = serializers.CharField(required=False, max_length=128)
     bio = serializers.CharField(required=False, max_length=1000)
-    birth_date = serializers.DateField() # required=False
+    birth_date = serializers.DateField(required=False)
     location = serializers.CharField(required=False, max_length=64)
     status = serializers.CharField(required=False, max_length=32)
     
@@ -39,8 +39,9 @@ class ProfileModelSerializer(serializers.ModelSerializer):
             attrs.pop('profile_avatar', None)
         
         birth_date = attrs.get('birth_date', None)
-        max_year = datetime.now().year-13
-        if birth_date.year < 1900 or birth_date.year > max_year:
-            raise ValueError(f'Birth date year must be between 1900 and {max_year}')
+        if birth_date:
+            max_year = datetime.now().year-13
+            if birth_date.year < 1900 or birth_date.year > max_year:
+                raise ValueError(f'Birth date year must be between 1900 and {max_year}')
         
         return super().validate(attrs)

@@ -4,10 +4,9 @@ throttle and action_throttle and middlewares
 
 cache
 
-profile avatar image size and weight checking
-
 black
 flake8
 
+views logics
 commenting
 refactor

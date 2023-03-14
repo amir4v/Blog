@@ -13,7 +13,7 @@ app_name = 'api-v1'
 
 
 urlpatterns = [
-    path('jwt/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # login
+    path('jwt/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'), # login
     path('jwt/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 

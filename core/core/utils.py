@@ -17,6 +17,7 @@ from rest_framework.serializers import ValidationError
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 from celery import shared_task
+from PIL import Image
 
 
 def get_activation_token(user):
@@ -68,18 +69,38 @@ def send_reset_email_email(user):
     )
 
 
-def upload(uploaded_file, dir):
+def check_file_size(file, size):
+    file_size = file.size
+    min_size, max_size, error_message = size
+    if file_size < min_size or file_size > max_size:
+        raise ValidationError(error_message)
+    
+    x, y = file.image.size
+    if x < 10 or y < 10:
+        raise ValidationError('Image resolution at least must be Width: 10px, Height: 10px')
+
+
+def upload(uploaded_file, dir, size, res=None, thumbnail_size=None):
+    check_file_size(uploaded_file, size)
+    
     dir = ['/media'] + dir
     
     name = str(uuid4())
     ext = uploaded_file.name.split('.')[-1] or 'unknown'
     filename = f'{name}.{ext}'
-    
     path = os.path.join(settings.MEDIA_ROOT, *dir[1:], filename)
-    f = open(path, 'wb')
-    file_bytes = uploaded_file.file.read()
-    f.write(file_bytes)
-    f.close()
+    
+    image = Image.open(uploaded_file.file)
+    
+    if res:
+        image.resize(res).save(path)
+    else:
+        image.save(path)
+    
+    if thumbnail_size:
+        image = image.resize(thumbnail_size)
+        thumbnail_path = os.path.join(settings.MEDIA_ROOT, *dir[1:], 'thumbnail', filename)
+        image.save(thumbnail_path)
     
     dir.append(filename)
     path = '/'.join(dir)
@@ -88,15 +109,25 @@ def upload(uploaded_file, dir):
 
 @shared_task
 def upload_avatar(avatar):
+    min_size = 1024
+    max_size = 1 * 1024 * 1024
+    error_message = f'File size must be between {min_size//1024}KB, {max_size//1024//1024}MB.'
+    size = min_size, max_size, error_message
+    
     dir = ['user', 'profile', 'avatar']
-    path = upload(avatar, dir)
+    path = upload(avatar, dir, size, thumbnail_size=(100, 100))
     return path
 
 
 @shared_task
 def upload_banner(banner):
+    min_size = 1024
+    max_size = 1 * 1024 * 1024
+    error_message = f'File size must be between {min_size//1024}KB, {max_size//1024//1024}MB.'
+    size = min_size, max_size, error_message
+    
     dir = ['post', 'banner']
-    path = upload(banner, dir)
+    path = upload(banner, dir, size)
     return path
 
 
@@ -142,17 +173,21 @@ def validate_username(username, null=True):
         return None
     
     length = len(username)
-    if length < 6 or length > 32:
-        raise ValidationError('Username length must be between 6 and 32')
+    if length < settings.USERNAME_MIN_LENGTH or length > settings.USERNAME_MAX_LENGTH:
+        raise ValidationError(f'Username length must be between {settings.USERNAME_MIN_LENGTH} and {settings.USERNAME_MAX_LENGTH}')
     
     if username.startswith('.') or username.startswith('_') \
         or \
         username.endswith('.') or username.endswith('_'):
             raise ValidationError('Username cannot start or end with . or _')
     
-    allowed_chars = string.ascii_lowercase + string.digits + '._'
-    pattern = rf'^[{allowed_chars}]{{6,32}}$'
-    print(pattern)
+    allowed_chars = string.ascii_lowercase + \
+                    string.digits + \
+                    '._'
+    pattern = rf'^[{allowed_chars}]' + \
+              rf'{{' + \
+              rf'{settings.USERNAME_MIN_LENGTH},{settings.USERNAME_MAX_LENGTH}' + \
+              rf'}}$'
     match = bool(re.match(pattern, username))
     if not match:
         raise ValidationError('Username must contain these allowed characters: a-z , 0-9 , . , _')

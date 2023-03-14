@@ -3,3 +3,4 @@ from .email import *
 from .password import *
 from .profile import *
 from .user import *
+from .jwt import *
