@@ -10,12 +10,15 @@ from rest_framework import permissions
 
 from accounts.api.v1.serializers import *
 from core.utils import send_activation_email, IsNotAuthenticated
+from accounts.api.v1.throttle import UserActionThrottle
 
 
 User = get_user_model()
 
 
 class UserModelViewSet(ModelViewSet):
+    throttle_classes = [UserActionThrottle]
+    
     def get_queryset(self):
         if self.action in ['pre_register']:
             return None

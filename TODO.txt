@@ -7,6 +7,8 @@ cache
 black
 flake8
 
+tests
+
 views logics
 commenting
 refactor

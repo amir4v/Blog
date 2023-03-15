@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'action_throttle',
     
     'accounts',
     'blog',
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    'action_throttle.middleware.ThrottleMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
