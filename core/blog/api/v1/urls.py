@@ -1,22 +1,17 @@
-from django.contrib import admin
-from django.urls import path, include
-
 from rest_framework.routers import DefaultRouter
 
-from .views import *
-
+from . import views
 
 app_name = 'api-v1'
-
 
 urlpatterns = []
 
 router = DefaultRouter()
 
-router.register('category', CategoryModelViewSet, basename='category')
-router.register('post', PostModelViewSet, basename='post')
-router.register('comment', CommentModelViewSet, basename='comment')
-router.register('blogger', BloggerViewSet, basename='blogger')
-router.register('pages', PagesViewSet, basename='pages')
+router.register('category', views.CategoryModelViewSet, basename='category')
+router.register('post', views.PostModelViewSet, basename='post')
+router.register('comment', views.CommentModelViewSet, basename='comment')
+router.register('blogger', views.BloggerViewSet, basename='blogger')
+router.register('pages', views.PagesViewSet, basename='pages')
 
 urlpatterns += router.urls

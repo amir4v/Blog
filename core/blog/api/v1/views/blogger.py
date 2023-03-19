@@ -11,7 +11,6 @@ from blog.models import *
 from blog.api.v1.serializers import *
 from accounts.api.v1.serializers import *
 
-
 User = get_user_model()
 
 
