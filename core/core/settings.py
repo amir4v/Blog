@@ -188,3 +188,8 @@ SIMPLE_JWT = {
 # CELERY
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+
+DEFAULT_THROTTLE_RATE = {
+    'ip': '20/100:s',
+    'user': '50/100:s',
+}

@@ -1,27 +1,25 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model, login
-from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, RetrieveAPIView, ListAPIView
+from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.state import api_settings
 from rest_framework import permissions
-import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+import jwt
 
 from accounts.api.v1.serializers import *
 from core.utils import send_reset_email_email
-
 
 User = get_user_model()
 
 
 class ResetEmailGenericAPIView(GenericAPIView):
-    serializer_class = ResetEmailSerializer
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ResetEmailSerializer
     
     @csrf_exempt
     def post(self, request):
@@ -34,7 +32,10 @@ class ResetEmailGenericAPIView(GenericAPIView):
         
         send_reset_email_email(user=user)
         
-        return Response('Reset-Email email sent successfully.', status=status.HTTP_200_OK)
+        return Response(
+            {'detail': 'Reset-Email email sent successfully.'},
+            status=status.HTTP_200_OK
+        )
 
 
 class ResetEmailVerifyAPIView(APIView):
@@ -43,7 +44,9 @@ class ResetEmailVerifyAPIView(APIView):
     def get(self, request, token):
         try:
             _token = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=[api_settings.ALGORITHM]
+                jwt=token,
+                key=settings.SECRET_KEY,
+                algorithms=[api_settings.ALGORITHM]
             )
             user_id = _token.get('user_id')
             email = _token.get('email')

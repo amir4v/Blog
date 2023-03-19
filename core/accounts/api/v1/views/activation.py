@@ -5,29 +5,27 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, RetrieveAPIView, ListAPIView
+from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.state import api_settings
-from rest_framework import permissions
-import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+import jwt
 
-from accounts.api.v1.serializers import user
-from accounts.api.v1.serializers import *
+from accounts.api.v1.serializers import UserActivationConfirmSerializer
 from core.utils import send_activation_email, IsNotAuthenticated
-
 
 User = get_user_model()
 
 
 class UserActivationAPIView(APIView):
     permission_classes = [IsNotAuthenticated]
-    
+
     def get(self, request, token):
         try:
             _token = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=[api_settings.ALGORITHM]
+                jwt=token, key=settings.SECRET_KEY,
+                algorithms=[api_settings.ALGORITHM]
             )
-            email = _token.get('email')
+            email = _token.get("email")
         except ExpiredSignatureError:
             return Response(
                 {"detail": "Token has been expired!"},
@@ -43,7 +41,7 @@ class UserActivationAPIView(APIView):
                 {"detail": "Token is not valid!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         user, created = User.objects.get_or_create(email=email)
         if user.is_verified:
             return Response(
@@ -53,13 +51,13 @@ class UserActivationAPIView(APIView):
         user.is_verified = True
         user.is_active = True
         user.save()
-        
+
         login(request, user)
-        
+
         return Response(
             {
                 "detail": "Your account has been verified and activated successfully.",
-                'access_token': token,
+                "access_token": token,
             },
             status=status.HTTP_200_OK,
         )
@@ -68,18 +66,21 @@ class UserActivationAPIView(APIView):
 class UserActivationConfirmGenericAPIView(GenericAPIView):
     serializer_class = UserActivationConfirmSerializer
     permission_classes = [IsNotAuthenticated]
-    
+
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
-        email = serializer.data.get('email')
-        user_obj = get_object_or_404(User, email=email)
-        if user_obj.is_verified:
+
+        email = serializer.validated_data.get("email")
+        user = get_object_or_404(User, email=email)
+        if user.is_verified:
             return Response(
                 {"detail": "Your account is already verified."},
                 status=status.HTTP_202_ACCEPTED,
             )
-        send_activation_email(user=user_obj)
-        
-        return Response('Confirm-Activation email sent successfully.', status=status.HTTP_200_OK)
+        send_activation_email(user=user)
+
+        return Response(
+            {"detail": "Activation-Confirm email sent successfully."},
+            status=status.HTTP_200_OK,
+        )

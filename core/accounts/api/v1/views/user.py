@@ -1,28 +1,30 @@
-from django.contrib.auth import get_user_model, logout as Logout, login as Login
+from django.contrib.auth import get_user_model, logout as Logout
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.serializers import ValidationError
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import permissions
 
-from accounts.api.v1.serializers import *
+from accounts.api.v1.serializers import (
+    ActivationEmailModelSerializer,
+    FirstTimeSetPasswordSerializer,
+    ProfileModelSerializer,
+    ResetPasswordSerializer,
+    ResetUsernameSerializer,
+    UserModelSerializer,
+)
 from core.utils import send_activation_email, IsNotAuthenticated
-from accounts.api.v1.throttle import UserActionThrottle
-
 
 User = get_user_model()
 
 
 class UserModelViewSet(ModelViewSet):
-    throttle_classes = [UserActionThrottle]
-    
     def get_queryset(self):
         if self.action in ['pre_register']:
             return None
-        if self.action in ['register', 'me', 'profile', 'reset_password', 'logout']:
+        if self.action in ['register', 'me', 'profile', 'reset_password',
+                           'reset_username', 'logout']:
             pk = self.request.user.pk
             return User.objects.filter(pk=pk)
         return User.objects.all()
@@ -30,7 +32,8 @@ class UserModelViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ['pre_register']:
             return [IsNotAuthenticated()]
-        if self.action in ['register', 'me', 'profile', 'reset_password', 'logout']:
+        if self.action in ['register', 'me', 'profile', 'reset_password',
+                           'reset_username', 'logout']:
             return [permissions.IsAuthenticated()]
         return [permissions.IsAdminUser()]
     
@@ -54,8 +57,11 @@ class UserModelViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
-        """PUT and PATCH are not allowed."""
-        return Response({'detail': 'Not allowed.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        """Update (PUT and PATCH) are not allowed."""
+        return Response(
+            {'detail': 'Method not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
     
     @action(detail=False, methods=['post'], url_path='pre-register')
     def pre_register(self, request):
@@ -63,17 +69,24 @@ class UserModelViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         
         user = request.user
-        user.email = serializer.data.get('email')
+        user.email = serializer.validated_data.get('email')
         send_activation_email(user=user)
         
-        return Response('Activation email sent successfully.', status=status.HTTP_200_OK)
+        return Response(
+            {'detail': 'Activation email sent successfully.'},
+            status=status.HTTP_200_OK
+        )
     
-    @action(detail=False, methods=['post'], url_path='register')
+    @action(detail=False, methods=['post'])
     def register(self, request):
-        serializer = self.get_serializer(data=request.data, context={'user': request.user})
+        serializer = self.get_serializer(data=request.data,
+                                         context={'user': request.user})
         serializer.is_valid(raise_exception=True)
         
-        return Response('Successfully set new password.', status=status.HTTP_200_OK)
+        return Response(
+            {'detail': 'Successfully set the new password.'}
+            , status=status.HTTP_200_OK
+        )
     
     @action(detail=False)
     def me(self, request):
@@ -87,16 +100,24 @@ class UserModelViewSet(ModelViewSet):
     
     @action(detail=False, methods=['post'], url_path='reset-password')
     def reset_password(self, request):
-        serializer = self.get_serializer(data=request.data, context={'user': request.user})
+        serializer = self.get_serializer(data=request.data,
+                                         context={'user': request.user})
         serializer.is_valid(raise_exception=True)
         Logout(request)
-        return Response('Password changed successfully.', status=status.HTTP_200_OK)
+        return Response(
+            {'detail': 'Password changed successfully.'},
+            status=status.HTTP_200_OK
+        )
     
     @action(detail=False, methods=['post'], url_path='reset-username')
     def reset_username(self, request):
-        serializer = self.get_serializer(data=request.data, context={'user': request.user})
+        serializer = self.get_serializer(data=request.data,
+                                         context={'user': request.user})
         serializer.is_valid(raise_exception=True)
-        return Response('Username changed successfully.', status=status.HTTP_200_OK)
+        return Response(
+            {'detail': 'Username changed successfully.'},
+            status=status.HTTP_200_OK
+        )
     
     @action(detail=False)
     def logout(self, request):

@@ -1,7 +1,5 @@
 Dockerizing
 
-throttle and action_throttle and middlewares
-
 cache
 
 black
@@ -9,6 +7,7 @@ flake8
 
 tests
 
-views logics
-commenting
+views logics # TODO
 refactor
+
+commenting

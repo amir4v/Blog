@@ -1,16 +1,11 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.parsers import FileUploadParser, MultiPartParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework import permissions
 
-from accounts.api.v1.serializers import *
+from accounts.api.v1.serializers import ProfileModelSerializer
 from accounts.models import Profile
-from core.utils import IsNotAuthenticated
-
 
 User = get_user_model()
 

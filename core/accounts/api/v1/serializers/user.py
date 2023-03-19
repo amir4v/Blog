@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model, authenticate
-from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
@@ -7,13 +6,13 @@ from rest_framework.serializers import ValidationError
 from accounts.api.v1.serializers.profile import ProfileModelSerializer
 from core.utils import validate_username
 
-
 User = get_user_model()
 
 
 class UserModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=False, max_length=32)
-    password = serializers.CharField(min_length=8, max_length=64, write_only=True)
+    password = serializers.CharField(min_length=8, max_length=64,
+                                     write_only=True)
     profile = ProfileModelSerializer(read_only=True)
     
     class Meta:
@@ -35,7 +34,9 @@ class LoginModelSerializer(serializers.ModelSerializer):
         fields = ['email_or_username', 'password']
     
     def validate(self, attrs):
-        self.user = authenticate(self.context.get('request'), attrs.get('email_or_username'), attrs.get('password'))
+        self.user = authenticate(self.context.get('request'),
+                                 attrs.get('email_or_username'),
+                                 attrs.get('password'))
         attrs.pop('email_or_username', None)
         return super().validate(attrs)
     
@@ -53,7 +54,6 @@ class ResetPasswordSerializer(serializers.Serializer):
         user = self.context.get('user')
         
         old_password = attrs.get('old_password')
-        
         new_password = attrs.get('new_password')
         confirm_new_password = attrs.get('confirm_new_password')
         
@@ -87,7 +87,6 @@ class FirstTimeSetPasswordSerializer(serializers.Serializer):
     
     def validate(self, attrs):
         user = self.context.get('user')
-        
         if user.password:
             raise ValidationError("You've already set password!")
         
@@ -98,5 +97,4 @@ class FirstTimeSetPasswordSerializer(serializers.Serializer):
         
         user.set_password(new_password)
         user.save()
-                
         return super().validate(attrs)

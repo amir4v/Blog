@@ -1,16 +1,11 @@
 from django.urls import path
 
-from rest_framework.routers import SimpleRouter, DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from . import views
 
-
 app_name = 'api-v1'
-
 
 urlpatterns = [
     path('jwt/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'), # login
@@ -36,7 +31,6 @@ router.register('user', views.UserModelViewSet, basename='user')
 user/
     pre-register/
     register/
-    # login/
     me/
     profile/
     reset-password/
