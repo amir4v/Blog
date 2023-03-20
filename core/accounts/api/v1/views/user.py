@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework import permissions
 
 from accounts.api.v1.serializers import (
-    ActivationEmailModelSerializer,
+    EmailUserActivationModelSerializer,
     FirstTimeSetPasswordSerializer,
     ProfileModelSerializer,
     ResetPasswordSerializer,
@@ -39,7 +39,7 @@ class UserModelViewSet(ModelViewSet):
     
     def get_serializer_class(self):
         if self.action == 'pre_register':
-            return ActivationEmailModelSerializer
+            return EmailUserActivationModelSerializer
         if self.action == 'register':
             return FirstTimeSetPasswordSerializer
         if self.action == 'profile':

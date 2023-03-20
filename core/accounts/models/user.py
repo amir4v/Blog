@@ -70,6 +70,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     
     def save(self, *args, **kwargs):
+        
+        """User just verified their email and want to be register/save"""
+        if self.password == '':
+            return super().save(*args, **kwargs)
+        
+        """Password is not hashed, it's updated/raw"""
         if len(self.password) != 88:
             if not self.is_superuser:
                 validate_password(self.password)

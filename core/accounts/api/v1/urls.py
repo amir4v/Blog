@@ -35,6 +35,8 @@ user/
     profile/
     reset-password/
     reset-username/
+    # /login/
+    # login/
     logout/
 """
 

@@ -5,8 +5,11 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework import permissions
 
-from blog.models import *
-from blog.api.v1.serializers import *
+from blog.models import Category
+from blog.api.v1.serializers import (
+    CategoryModelSerializer,
+    PostModelSerializer,
+)
 
 
 class CategoryModelViewSet(ModelViewSet):
@@ -25,7 +28,7 @@ class CategoryModelViewSet(ModelViewSet):
     
     @action(detail=True, methods=['get'])
     def posts(self, request, pk):
-        category = get_object_or_404(self.get_queryset(), pk=pk)
+        category = get_object_or_404(Category, pk=pk)
         posts = category.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)
         return Response(serializer.data)

@@ -1,4 +1,4 @@
 from .category import *
-from .post import *
 from .comment import *
+from .post import *
 from .user import *

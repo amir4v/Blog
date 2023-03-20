@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from blog.models import *
+from blog.models import Comment
 
 
 class CommentModelSerializer(serializers.ModelSerializer):
@@ -8,7 +8,7 @@ class CommentModelSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ['comment', 'profile', 'post']
+        fields = ['profile', 'post', 'comment']
     
     def validate(self, attrs):
         user = self.context.get('request').user

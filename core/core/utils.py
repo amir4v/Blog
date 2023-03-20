@@ -29,7 +29,7 @@ def get_activation_token(user):
 
 @shared_task
 def send_activation_email(user):
-    address = 'http://127.0.0.1:8000/accounts/api/v1/users/activation'
+    address = 'http://127.0.0.1:8000/accounts/api/v1/user/activation'
     token = get_activation_token(user)
     link = f'{address}/{token}/'
     send_mail(
@@ -43,7 +43,7 @@ def send_activation_email(user):
 
 @shared_task
 def send_reset_password_email(user):
-    address = 'http://127.0.0.1:8000/accounts/api/v1/users/forgot-password-verify'
+    address = 'http://127.0.0.1:8000/accounts/api/v1/user/forgot-password-verify'
     token = get_activation_token(user)
     link = f'{address}/{token}/'
     send_mail(
@@ -57,7 +57,7 @@ def send_reset_password_email(user):
 
 @shared_task
 def send_reset_email_email(user):
-    address = 'http://127.0.0.1:8000/accounts/api/v1/users/reset-email-verify'
+    address = 'http://127.0.0.1:8000/accounts/api/v1/user/reset-email-verify'
     token = get_activation_token(user)
     link = f'{address}/{token}/'
     send_mail(

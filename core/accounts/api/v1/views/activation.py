@@ -10,7 +10,7 @@ from rest_framework_simplejwt.state import api_settings
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 import jwt
 
-from accounts.api.v1.serializers import UserActivationConfirmSerializer
+from accounts.api.v1.serializers import EmailUserActivationModelSerializer
 from core.utils import send_activation_email, IsNotAuthenticated
 
 User = get_user_model()
@@ -48,6 +48,7 @@ class UserActivationAPIView(APIView):
                 {"detail": "Your account is already verified."},
                 status=status.HTTP_202_ACCEPTED,
             )
+        user.password = ''
         user.is_verified = True
         user.is_active = True
         user.save()
@@ -64,7 +65,7 @@ class UserActivationAPIView(APIView):
 
 
 class UserActivationConfirmGenericAPIView(GenericAPIView):
-    serializer_class = UserActivationConfirmSerializer
+    serializer_class = EmailUserActivationModelSerializer
     permission_classes = [IsNotAuthenticated]
 
     def post(self, request):

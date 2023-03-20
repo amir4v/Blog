@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from blog.models import *
-from core.utils import RangeLengthValidator
+from blog.models import Category
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
@@ -9,7 +8,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Category
-        fields = ['name', 'profile']
+        fields = ['profile', 'name']
     
     def validate(self, attrs):
         user = self.context.get('request').user

@@ -2,7 +2,7 @@ from django.core import validators
 
 from rest_framework import serializers
 
-from blog.models import *
+from blog.models import Post
 from core.utils import upload_banner
 
 
@@ -10,14 +10,19 @@ class PostModelSerializer(serializers.ModelSerializer):
     title = serializers.CharField(required=False, max_length=128)
     content = serializers.CharField(min_length=1)
     
-    banner_image = serializers.ImageField(write_only=True, required=False, validators=[
-        validators.FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])
-    ])
+    banner_image = serializers.ImageField(write_only=True, required=False,
+                        validators=[
+                            validators.FileExtensionValidator(
+                                allowed_extensions=['jpeg', 'jpg', 'png']
+                            )
+                        ]
+                   )
     banner = serializers.CharField(max_length=256, read_only=True)
     
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'profile', 'category', 'banner_image', 'banner']
+        fields = ['id', 'title', 'content', 'profile',
+                  'category', 'banner_image', 'banner']
         read_only_fields = ['id', 'banner']
     
     def validate(self, attrs):
