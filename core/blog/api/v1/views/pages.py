@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -22,6 +24,7 @@ class PagesViewSet(ViewSet):
     profile search
     """
     
+    @method_decorator(cache_page(15 * 60))
     @action(detail=False, methods=['get'])
     def home(self, request):
         profile = request.user.profile
@@ -31,6 +34,7 @@ class PagesViewSet(ViewSet):
         data = PostModelSerializer(instance=posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
+    @method_decorator(cache_page(15 * 60))
     @action(detail=False, methods=['get'])
     def top(self, request):
         """
@@ -46,6 +50,7 @@ class PagesViewSet(ViewSet):
         data = PostModelSerializer(instance=posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
+    @method_decorator(cache_page(15 * 60))
     @action(detail=False, methods=['get'])
     def latest(self, request):
         posts = Post.objects.order_by('-created_at')

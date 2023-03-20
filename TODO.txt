@@ -1,13 +1,10 @@
 Dockerizing
-
-cache
-
+-----------
+Refactor
+->
+Commenting
+->
+Tests
+->
 black
 flake8
-
-tests
-
-views logics # TODO
-refactor
-
-commenting

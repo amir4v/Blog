@@ -185,11 +185,24 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
 
+# Throttle
+DEFAULT_THROTTLE_RATE = {
+    'ip': '20/100:s',
+    'user': '50/100:s',
+}
+
 # CELERY
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
-DEFAULT_THROTTLE_RATE = {
-    'ip': '20/100:s',
-    'user': '50/100:s',
+# CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        'LOCATION': 'redis://redis:6379/1',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "blog"
+    }
 }

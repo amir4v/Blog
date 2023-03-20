@@ -13,6 +13,7 @@ redis
 celery
 celery[redis]
 django-celery
+django-redis
 
 psycopg2-binary
 
