@@ -153,7 +153,7 @@ EMAIL_HOST_USER = 'admin@admin.admin'
 # EMAIL_TIMEOUT = ''
 # EMAIL_SSL_KEYFILE = ''
 # EMAIL_SSL_CERTFILE = ''
-
+#
 # Email Backend Configuration
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

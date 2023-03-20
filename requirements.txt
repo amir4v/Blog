@@ -3,6 +3,7 @@ Pillow
 gunicorn
 
 djangorestframework
+djangoactionthrottle
 
 djoser
 djangorestframework_simplejwt

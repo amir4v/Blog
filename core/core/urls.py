@@ -4,11 +4,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf import settings
 
-from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from accounts.api.v1.views import CustomTokenObtainPairView
-
 
 urlpatterns = [
    path('admin/', admin.site.urls),

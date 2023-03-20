@@ -6,18 +6,21 @@ import re
 
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
-from django.core.validators import BaseValidator, MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
-from django.utils.deconstruct import deconstructible
+from django.core.validators import (
+    BaseValidator,
+    MinLengthValidator,
+    MaxLengthValidator,
+    MinValueValidator,
+    MaxValueValidator,
+)
 
-from rest_framework_simplejwt.state import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import permissions
 from rest_framework.serializers import ValidationError
-import jwt
-from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 from celery import shared_task
 from PIL import Image
+
+HOST = 'http://127.0.0.1:8000'
 
 
 def get_activation_token(user):
@@ -29,7 +32,7 @@ def get_activation_token(user):
 
 @shared_task
 def send_activation_email(user):
-    address = 'http://127.0.0.1:8000/accounts/api/v1/user/activation'
+    address = f'{HOST}/accounts/api/v1/user/activation'
     token = get_activation_token(user)
     link = f'{address}/{token}/'
     send_mail(
@@ -43,7 +46,7 @@ def send_activation_email(user):
 
 @shared_task
 def send_reset_password_email(user):
-    address = 'http://127.0.0.1:8000/accounts/api/v1/user/forgot-password-verify'
+    address = f'{HOST}/accounts/api/v1/user/forgot-password-verify'
     token = get_activation_token(user)
     link = f'{address}/{token}/'
     send_mail(
@@ -57,7 +60,7 @@ def send_reset_password_email(user):
 
 @shared_task
 def send_reset_email_email(user):
-    address = 'http://127.0.0.1:8000/accounts/api/v1/user/reset-email-verify'
+    address = f'{HOST}/accounts/api/v1/user/reset-email-verify'
     token = get_activation_token(user)
     link = f'{address}/{token}/'
     send_mail(
@@ -99,7 +102,12 @@ def upload(uploaded_file, dir, size, res=None, thumbnail_size=None):
     
     if thumbnail_size:
         image = image.resize(thumbnail_size)
-        thumbnail_path = os.path.join(settings.MEDIA_ROOT, *dir[1:], 'thumbnail', filename)
+        thumbnail_path = os.path.join(
+                settings.MEDIA_ROOT,
+                *dir[1:],
+                'thumbnail',
+                filename
+            )
         image.save(thumbnail_path)
     
     dir.append(filename)
@@ -176,10 +184,8 @@ def validate_username(username, null=True):
     if length < settings.USERNAME_MIN_LENGTH or length > settings.USERNAME_MAX_LENGTH:
         raise ValidationError(f'Username length must be between {settings.USERNAME_MIN_LENGTH} and {settings.USERNAME_MAX_LENGTH}')
     
-    if username.startswith('.') or username.startswith('_') \
-        or \
-        username.endswith('.') or username.endswith('_'):
-            raise ValidationError('Username cannot start or end with . or _')
+    if username.startswith('.') or username.endswith('.'):
+        raise ValidationError('Username cannot start or end with . ')
     
     allowed_chars = string.ascii_lowercase + \
                     string.digits + \
