@@ -28,6 +28,7 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 class LoginModelSerializer(serializers.ModelSerializer):
     email_or_username = serializers.CharField(max_length=256)
+    """This field is hear to implement two factor authentication."""
     
     class Meta:
         model = User
@@ -38,6 +39,11 @@ class LoginModelSerializer(serializers.ModelSerializer):
                                  attrs.get('email_or_username'),
                                  attrs.get('password'))
         attrs.pop('email_or_username', None)
+        """
+        Pop the email_or_username because the User model doesn't has
+        this field; This field is hear to implement two factor authentication.
+        """
+        
         return super().validate(attrs)
     
     @property
@@ -88,6 +94,11 @@ class FirstTimeSetPasswordSerializer(serializers.Serializer):
     def validate(self, attrs):
         user = self.context.get('user')
         if user.password:
+            """
+            If there is already a password and it's not Null or
+            an empty string('') that means this User already registered and
+            set the password.
+            """
             raise ValidationError("You've already set password!")
         
         new_password = attrs.get('new_password')

@@ -30,6 +30,10 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         ]
     )
     avatar = serializers.CharField(max_length=256, read_only=True)
+    """
+    We upload the profile image file to a temporary field called profile_avatar
+    and then upload the file and get the path to the avatar field.
+    """
     
     class Meta:
         model = Profile
@@ -40,12 +44,21 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         avatar = attrs.get('profile_avatar', None)
         if avatar:
+            """
+            If User upload a profile image, we upload the file and get
+            the path to the avatar field and then pop the profile_avatar
+            because it's not in the User model fields.
+            """
             path = upload_avatar(avatar)
             attrs['avatar'] = path
             attrs.pop('profile_avatar', None)
         
         birth_date = attrs.get('birth_date', None)
         if birth_date:
+            """
+            The User age at least must be 13 and birth date must be
+            greater than 1900.
+            """
             max_year = datetime.now().year-13
             if birth_date.year < 1900 or birth_date.year > max_year:
                 raise ValueError(f'Birth date year must be between 1900 and {max_year}')

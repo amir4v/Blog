@@ -198,4 +198,11 @@ def validate_username(username, null=True):
     if not match:
         raise ValidationError('Username must contain these allowed characters: a-z , 0-9 , . , _')
     
+    allowed_chars = string.ascii_lowercase + \
+                    string.digits
+    pattern = rf'^.*[{allowed_chars}]+.*$'
+    match = bool(re.match(pattern, username))
+    if not match:
+        raise ValidationError('Username at least must contain an alphabet character(a-z) or a number(0-9).')
+    
     return username

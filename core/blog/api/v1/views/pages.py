@@ -25,7 +25,7 @@ class PagesViewSet(ViewSet):
     """
     
     @method_decorator(cache_page(15 * 60))
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def home(self, request):
         profile = request.user.profile
         posts = Post.objects.filter(
@@ -35,7 +35,7 @@ class PagesViewSet(ViewSet):
         return Response(data, status=status.HTTP_200_OK)
     
     @method_decorator(cache_page(15 * 60))
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def top(self, request):
         """
         created_at
@@ -51,20 +51,20 @@ class PagesViewSet(ViewSet):
         return Response(data, status=status.HTTP_200_OK)
     
     @method_decorator(cache_page(15 * 60))
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def latest(self, request):
         posts = Post.objects.order_by('-created_at')
         data = PostModelSerializer(instance=posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=['get'], url_path='search-post')
+    @action(detail=True, url_path='search-post')
     def search_post(self, request, pk):
         posts = Post.objects.filter(title__icontains=pk) \
                             .order_by('-created_at')
         data = PostModelSerializer(instance=posts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=['get'], url_path='search-profile')
+    @action(detail=True, url_path='search-profile')
     def search_profile(self, request, pk):
         profiles = User.objects.filter(username__icontains=pk) \
                                .values('profile').order_by('?')

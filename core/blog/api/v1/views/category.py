@@ -26,7 +26,7 @@ class CategoryModelViewSet(ModelViewSet):
             return Category.objects.filter(profile=profile)
         return Category.objects.all()
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def posts(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         posts = category.posts.all()

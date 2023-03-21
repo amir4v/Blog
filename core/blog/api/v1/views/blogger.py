@@ -19,21 +19,21 @@ User = get_user_model()
 
 
 class BloggerViewSet(ViewSet):
-    @action(detail=False, methods=['get'], url_path='saved-posts')
+    @action(detail=False, url_path='saved-posts')
     def saved_posts(self, request):
         profile = request.user.profile
         posts = profile.posts_saved.all()
         serializer = PostModelSerializer(instance=posts, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def categories(self, request):
         profile = request.user.profile
         categories = profile.categories.all()
         serializer = CategoryModelSerializer(instance=categories, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'], url_path='category-posts')
+    @action(detail=True, url_path='category-posts')
     def category_posts(self, request, pk):
         profile = request.user.profile
         category = get_object_or_404(Category, profile=profile, pk=pk)
@@ -41,35 +41,35 @@ class BloggerViewSet(ViewSet):
         serializer = PostModelSerializer(instance=posts, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def posts(self, request):
         profile = request.user.profile
         posts = profile.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'], url_path='liked-posts')
+    @action(detail=False, url_path='liked-posts')
     def liked_posts(self, request):
         profile = request.user.profile
         posts = profile.posts_liked.all()
         serializer = PostModelSerializer(instance=posts, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'], url_path='comments')
+    @action(detail=False, url_path='comments')
     def comments(self, request):
         profile = request.user.profile
         comments = profile.comments.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'], url_path='liked-comments')
+    @action(detail=False, url_path='liked-comments')
     def liked_comments(self, request):
         profile = request.user.profile
         comments = profile.comments_liked.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def follow(self, request, pk):
         profile = request.user.profile
         profile.followings.add(pk)
@@ -78,7 +78,7 @@ class BloggerViewSet(ViewSet):
             status=status.HTTP_200_OK
         )
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def unfollow(self, request, pk):
         profile = request.user.profile
         profile.followings.remove(pk)
@@ -87,21 +87,21 @@ class BloggerViewSet(ViewSet):
             status=status.HTTP_200_OK
         )
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def followers(self, request):
         profile = request.user.profile
         fs = profile.followers.all()
         serializer = ProfileModelSerializer(instance=fs, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False)
     def followings(self, request):
         profile = request.user.profile
         fs = profile.followings.all()
         serializer = ProfileModelSerializer(instance=fs, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'], url_path='do-i-follow-you')
+    @action(detail=True, url_path='do-i-follow-you')
     def do_i_follow_you(self, request, pk):
         profile = request.user.profile
         you = get_object_or_404(Profile, pk=pk)
@@ -117,7 +117,7 @@ class BloggerViewSet(ViewSet):
             status=status.HTTP_204_NO_CONTENT
         )
     
-    @action(detail=True, methods=['get'], url_path='do-you-follow-me')
+    @action(detail=True, url_path='do-you-follow-me')
     def do_you_follow_me(self, request, pk):
         profile = request.user.profile
         you = get_object_or_404(Profile, pk=pk)

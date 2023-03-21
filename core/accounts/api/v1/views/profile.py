@@ -11,6 +11,20 @@ User = get_user_model()
 
 
 class ProfileModelViewSet(ModelViewSet):
+    """
+    Profile Model View Set
+    ----------------------
+    A user can perform these actions:
+        retrieve
+        update
+        partial_update
+    
+    A admin user can perform all above + :
+        create
+        destroy
+        list
+    """
+    
     serializer_class = ProfileModelSerializer
     parser_classes = [MultiPartParser]
     

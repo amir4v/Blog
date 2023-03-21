@@ -33,42 +33,42 @@ class PostModelViewSet(ModelViewSet):
         obj.save()
         return obj
     
-    @action(detail=True, methods=['get'], url_path='who-liked')
+    @action(detail=True, url_path='who-liked')
     def who_liked(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         profiles = post.who_liked.all()
         serializer = ProfileModelSerializer(instance=profiles, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def comments(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         comments = post.comments.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def like(self, request, pk):
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_liked.add(post)
         return Response('Liked successfully.', status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def unlike(self, request, pk):
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_liked.remove(post)
         return Response('UnLiked successfully.', status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def save(self, request, pk):
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_saved.add(post)
         return Response('Saved successfully.', status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def unsave(self, request, pk):
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)

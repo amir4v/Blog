@@ -8,4 +8,4 @@ User = get_user_model()
 class EmailUserActivationModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email',]
+        fields = ['email']

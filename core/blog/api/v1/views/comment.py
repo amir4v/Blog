@@ -25,21 +25,21 @@ class CommentModelViewSet(ModelViewSet):
             return [permissions.IsAuthenticated()]
         return [permissions.IsAdminUser()]
     
-    @action(detail=True, methods=['get'], url_path='who-liked')
+    @action(detail=True, url_path='who-liked')
     def who_liked(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
         profiles = comment.who_liked.all()
         serializer = ProfileModelSerializer(instance=profiles, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def like(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
         profile = request.user.profile
         profile.comments_liked.add(comment)
         return Response('Liked successfully.', status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True)
     def unlike(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
         profile = request.user.profile
