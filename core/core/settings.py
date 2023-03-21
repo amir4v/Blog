@@ -47,11 +47,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'action_throttle',
-    'debug_toolbar',
     
     'accounts',
     'blog',
 ]
+# if DEBUG:
+#     INSTALLED_APPS.append('debug_toolbar')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,8 +65,8 @@ MIDDLEWARE = [
     
     'action_throttle.middleware.ThrottleMiddleware',
 ]
-if DEBUG:
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+# if DEBUG:
+#     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'core.urls'
 
