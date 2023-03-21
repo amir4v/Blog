@@ -4,4 +4,13 @@ from accounts.api.v1.serializers import *
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    Custom TokenObtainPairView
+    --------------------------
+    (Actually) Login View
+    ---------------------
+    Takes username and password
+    and returns an access token and a refresh token.
+    """
+    
     serializer_class = CustomTokenObtainPairSerializer

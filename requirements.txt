@@ -19,3 +19,4 @@ psycopg2-binary
 
 black
 flake8
+django-debug-toolbar

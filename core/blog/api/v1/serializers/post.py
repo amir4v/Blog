@@ -18,6 +18,10 @@ class PostModelSerializer(serializers.ModelSerializer):
                         ]
                    )
     banner = serializers.CharField(max_length=256, read_only=True)
+    """
+    We upload the banner image file to a temporary field called banner_image
+    and then upload the file and get the path to the banner field.
+    """
     
     class Meta:
         model = Post
@@ -33,14 +37,29 @@ class PostModelSerializer(serializers.ModelSerializer):
         category = attrs.get('category')
         
         if not user.is_superuser and user_profile != profile:
+            """
+            The given profile for this post must be the same as
+            the current user profile to prevent it from a user create a post
+            for other users.
+            """
             raise serializers.ValidationError('Access denied.')
         
         if banner:
+            """
+            If user upload a banner_image, we upload the file and get
+            the path to the banner field and then pop the banner_image
+            because it's not in the user model fields.
+            """
             path = upload_banner(banner)
             attrs['banner'] = path
-            attrs.pop('banner_image', None)
+        attrs.pop('banner_image', None)
         
         if not user_profile.categories.filter(pk=category.pk).exists():
+            """
+            The given category for this post must be one of
+            current user categories to prevent it from a user create a post
+            for other users categories.
+            """
             raise serializers.ValidationError('Access denied.')
         
         return super().validate(attrs)

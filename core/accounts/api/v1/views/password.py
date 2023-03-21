@@ -18,6 +18,12 @@ User = get_user_model()
 
 
 class ForgotPasswordAPIView(APIView):
+    """
+    Forgot Password API View
+    ------------------------
+    Sends a reset password email to current user.
+    """
+    
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -28,6 +34,21 @@ class ForgotPasswordAPIView(APIView):
         )
 
 class ForgotPasswordVerifyAPIView(APIView):
+    """
+    Forgot Password Verify API View
+    -------------------------------
+    Takes a token that we sent to the user for reset-password.
+    
+    Check the token.
+    
+    Empty('') the password because empty password means the user is allowed to
+    reset-password.
+    
+    Then user can be redirect to 'register' path for reset-password
+    because in 'register' path you can change your password if you've been
+    saved in the database and your password is empty('').
+    """
+    
     permission_classes = [permissions.AllowAny]
     
     def get(self, request, token):
@@ -57,8 +78,8 @@ class ForgotPasswordVerifyAPIView(APIView):
         user = User.objects.get(email=email)
         user.password = ''
         user.save()   
-        login(request, user)
         
+        login(request, user)
         # Go to 'register' route for set password.
         
         return Response(
@@ -71,6 +92,19 @@ class ForgotPasswordVerifyAPIView(APIView):
 
 
 class ForgotPasswordConfirmGenericAPIView(GenericAPIView):
+    """
+    Forgot Password Generic API View
+    --------------------------------
+    This view is for the user that can not login to the website because he/she
+    forgets him/her password.
+    
+    Takes an email for sending a link for resetting the password.
+    
+    Check existence of the email.
+    
+    Send a email for reset-password.
+    """
+    
     permission_classes = [IsNotAuthenticated]
     serializer_class = ForgotPasswordConfirmEmailSerializer    
     

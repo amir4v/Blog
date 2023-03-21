@@ -9,7 +9,9 @@ from drf_yasg import openapi
 from accounts.api.v1.views import CustomTokenObtainPairView
 
 urlpatterns = [
-   path('admin/', admin.site.urls),
+   path('admin/', admin.site.urls), # TODO: must be change.
+   
+   # path('', TemplateView(template_name='home-index.html'), name='home-index'), # TODO: Home-Index entry.
    
    path('accounts/api/v1/user' + settings.LOGIN_URL, CustomTokenObtainPairView.as_view(), name='login'), # accounts.api.v1 -> login
    path(settings.LOGIN_URL[1:], CustomTokenObtainPairView.as_view(), name='login'), # accounts.api.v1 -> login
@@ -19,6 +21,7 @@ urlpatterns = [
    path('blog/', include('blog.urls'), name='blog'),
 ]
 
+# SWAGGER - BEGIN
 schema_view = get_schema_view(
    openapi.Info(
       title="Snippets API",
@@ -33,5 +36,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns += [path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),]
+# SWAGGER - END
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+"""DEBUG=True only urls/configs"""
+if settings.DEBUG:
+   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   urlpatterns.append(
+      path('__debug__/', include('debug_toolbar.urls'))
+   )

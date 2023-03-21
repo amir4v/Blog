@@ -16,6 +16,11 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         profile = attrs.get('profile')
         
         if not user.is_superuser and user_profile != profile:
+            """
+            The given profile for this category must be the same as
+            the current user profile to prevent it from a user create
+            a category for other users.
+            """
             raise serializers.ValidationError('Access denied.')
         
         return super().validate(attrs)

@@ -18,6 +18,13 @@ User = get_user_model()
 
 
 class ResetEmailGenericAPIView(GenericAPIView):
+    """
+    Reset Email Generic API View
+    ----------------------------
+    Takes a new email and checks email not be exist and
+    sends a link to that new email for verifying.
+    """
+    
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ResetEmailSerializer
     
@@ -39,6 +46,12 @@ class ResetEmailGenericAPIView(GenericAPIView):
 
 
 class ResetEmailVerifyAPIView(APIView):
+    """
+    Reset Email Verify API View
+    ---------------------------
+    Takes a token and checks the token and then will set the new email.
+    """
+    
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, token):
@@ -69,6 +82,7 @@ class ResetEmailVerifyAPIView(APIView):
         user = User.objects.get(id=user_id)
         user.email = email
         user.save()
+        
         login(request, user)
         
         data = {

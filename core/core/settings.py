@@ -27,7 +27,9 @@ SECRET_KEY = 'django-insecure-48mhlnd^nfwd_khl+o%e)7srh-!grdoh3krn3m8svphp(x_zm3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'action_throttle',
+    'debug_toolbar',
     
     'accounts',
     'blog',
@@ -61,6 +64,8 @@ MIDDLEWARE = [
     
     'action_throttle.middleware.ThrottleMiddleware',
 ]
+if DEBUG:
+    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = 'core.urls'
 
@@ -83,6 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+# ASGI_APPLICATION = ''
 
 
 # Database
@@ -143,7 +149,8 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email Configuration
+
+# ---:::--- Email Configuration ---:::---
 # EMAIL_HOST = ''
 # EMAIL_PORT = ''
 EMAIL_HOST_USER = 'admin@admin.admin'
@@ -180,6 +187,7 @@ REST_FRAMEWORK = {
     # ],
 }
 
+# SIMPLE JWT
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),

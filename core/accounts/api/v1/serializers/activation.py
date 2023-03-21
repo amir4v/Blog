@@ -6,6 +6,8 @@ User = get_user_model()
 
 
 class EmailUserActivationModelSerializer(serializers.ModelSerializer):
+    pass
+
     class Meta:
         model = User
         fields = ['email']

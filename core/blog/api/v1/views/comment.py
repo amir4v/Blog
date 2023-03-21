@@ -12,6 +12,23 @@ from accounts.api.v1.serializers.profile import ProfileModelSerializer
 
 
 class CommentModelViewSet(ModelViewSet):
+    """
+    Comment Model View Set
+    ----------------------
+    A user can perform these actions:
+        create
+        retrieve
+        update
+        partial_update
+        destroy
+        who_liked
+        like
+        unlike
+    
+    A admin user can perform all above actions + :
+        list
+    """
+    
     serializer_class = CommentModelSerializer
     
     def get_queryset(self):
@@ -27,6 +44,8 @@ class CommentModelViewSet(ModelViewSet):
     
     @action(detail=True, url_path='who-liked')
     def who_liked(self, request, pk):
+        """Get profiles that liked the given comment."""
+        
         comment = get_object_or_404(Comment, pk=pk)
         profiles = comment.who_liked.all()
         serializer = ProfileModelSerializer(instance=profiles, many=True)
@@ -34,6 +53,8 @@ class CommentModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def like(self, request, pk):
+        """Like the given comment."""
+        
         comment = get_object_or_404(Comment, pk=pk)
         profile = request.user.profile
         profile.comments_liked.add(comment)
@@ -41,6 +62,8 @@ class CommentModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def unlike(self, request, pk):
+        """Un-Like the given comment."""
+        
         comment = get_object_or_404(Comment, pk=pk)
         profile = request.user.profile
         profile.comments_liked.remove(comment)

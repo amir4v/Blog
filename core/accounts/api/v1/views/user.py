@@ -75,6 +75,7 @@ class UserModelViewSet(ModelViewSet):
         Overriding post method because we changed the default User model
         and want to prevent unknown errors.
         """
+        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         User.objects.create(**serializer.validated_data)
@@ -82,6 +83,7 @@ class UserModelViewSet(ModelViewSet):
     
     def update(self, request, *args, **kwargs):
         """Update (PUT and PATCH) are not allowed."""
+        
         return Response(
             {'detail': 'Method not allowed.'},
             status=status.HTTP_405_METHOD_NOT_ALLOWED

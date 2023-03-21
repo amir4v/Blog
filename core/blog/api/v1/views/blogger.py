@@ -19,8 +19,29 @@ User = get_user_model()
 
 
 class BloggerViewSet(ViewSet):
+    """
+    Blogger View Set
+    ----------------
+    A user can perform these actions:
+        saved_posts
+        categories
+        category_posts
+        posts
+        liked_posts
+        comments
+        liked_comments
+        follow
+        unfollow
+        followers
+        followings
+        do_i_follow_you
+        do_you_follow_me
+    """
+    
     @action(detail=False, url_path='saved-posts')
     def saved_posts(self, request):
+        """Get current user's saved posts."""
+        
         profile = request.user.profile
         posts = profile.posts_saved.all()
         serializer = PostModelSerializer(instance=posts, many=True)
@@ -28,6 +49,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False)
     def categories(self, request):
+        """Get current user's categories."""
+        
         profile = request.user.profile
         categories = profile.categories.all()
         serializer = CategoryModelSerializer(instance=categories, many=True)
@@ -35,6 +58,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=True, url_path='category-posts')
     def category_posts(self, request, pk):
+        """Get current user's category's posts."""
+        
         profile = request.user.profile
         category = get_object_or_404(Category, profile=profile, pk=pk)
         posts = category.posts.all()
@@ -43,6 +68,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False)
     def posts(self, request):
+        """Get current user's posts."""
+        
         profile = request.user.profile
         posts = profile.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)
@@ -50,6 +77,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False, url_path='liked-posts')
     def liked_posts(self, request):
+        """Get current user's liked posts."""
+        
         profile = request.user.profile
         posts = profile.posts_liked.all()
         serializer = PostModelSerializer(instance=posts, many=True)
@@ -57,6 +86,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False, url_path='comments')
     def comments(self, request):
+        """Get current user's comments."""
+        
         profile = request.user.profile
         comments = profile.comments.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
@@ -64,6 +95,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False, url_path='liked-comments')
     def liked_comments(self, request):
+        """Get current user's liked comments."""
+        
         profile = request.user.profile
         comments = profile.comments_liked.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
@@ -71,6 +104,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=True)
     def follow(self, request, pk):
+        """Get current user follows someone."""
+        
         profile = request.user.profile
         profile.followings.add(pk)
         return Response(
@@ -80,6 +115,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=True)
     def unfollow(self, request, pk):
+        """Get current user unfollows someone."""
+        
         profile = request.user.profile
         profile.followings.remove(pk)
         return Response(
@@ -89,6 +126,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False)
     def followers(self, request):
+        """Get current user's followers."""
+        
         profile = request.user.profile
         fs = profile.followers.all()
         serializer = ProfileModelSerializer(instance=fs, many=True)
@@ -96,6 +135,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=False)
     def followings(self, request):
+        """Get current user's followings."""
+        
         profile = request.user.profile
         fs = profile.followings.all()
         serializer = ProfileModelSerializer(instance=fs, many=True)
@@ -103,6 +144,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=True, url_path='do-i-follow-you')
     def do_i_follow_you(self, request, pk):
+        """Does current user follow the given user."""
+        
         profile = request.user.profile
         you = get_object_or_404(Profile, pk=pk)
         
@@ -119,6 +162,8 @@ class BloggerViewSet(ViewSet):
     
     @action(detail=True, url_path='do-you-follow-me')
     def do_you_follow_me(self, request, pk):
+        """Does the given user follow current user."""
+        
         profile = request.user.profile
         you = get_object_or_404(Profile, pk=pk)
         

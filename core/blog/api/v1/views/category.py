@@ -13,6 +13,21 @@ from blog.api.v1.serializers import (
 
 
 class CategoryModelViewSet(ModelViewSet):
+    """
+    Category Model View Set
+    -----------------------
+    A user can perform these actions:
+        create
+        retrieve
+        update
+        partial_update
+        destroy
+        posts
+    
+    A admin user can perform all above actions + :
+        list
+    """
+    
     serializer_class = CategoryModelSerializer
     
     def get_permissions(self):
@@ -28,6 +43,8 @@ class CategoryModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def posts(self, request, pk):
+        """Get the given category's posts."""
+        
         category = get_object_or_404(Category, pk=pk)
         posts = category.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)

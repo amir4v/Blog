@@ -45,18 +45,18 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         avatar = attrs.get('profile_avatar', None)
         if avatar:
             """
-            If User upload a profile image, we upload the file and get
+            If user upload a profile image, we upload the file and get
             the path to the avatar field and then pop the profile_avatar
-            because it's not in the User model fields.
+            because it's not in the user model fields.
             """
             path = upload_avatar(avatar)
             attrs['avatar'] = path
-            attrs.pop('profile_avatar', None)
+        attrs.pop('profile_avatar', None)
         
         birth_date = attrs.get('birth_date', None)
         if birth_date:
             """
-            The User age at least must be 13 and birth date must be
+            The user age at least must be 13 and birth date must be
             greater than 1900.
             """
             max_year = datetime.now().year-13

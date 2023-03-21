@@ -23,5 +23,7 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def user_created(sender, instance, created, *args, **kwargs):
+    """This is for create a profile for the just created user."""
+    
     if created:
         Profile.objects.create(user=instance)

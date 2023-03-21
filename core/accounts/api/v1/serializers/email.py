@@ -6,17 +6,17 @@ User = get_user_model()
 
 
 class ResetEmailSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    confirm_email = serializers.EmailField()
+    new_email = serializers.EmailField()
+    confirm_new_email = serializers.EmailField()
     
     def validate(self, attrs):
-        email = attrs.get('email')
-        confirm_email = attrs.get('confirm_email')
+        new_email = attrs.get('new_email')
+        confirm_new_email = attrs.get('new_confirm_email')
         
-        if email != confirm_email:
+        if new_email != confirm_new_email:
             raise serializers.ValidationError('Emails do not match!')
         
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=new_email).exists():
             raise serializers.ValidationError('Email already exists!')
         
         return super().validate(attrs)

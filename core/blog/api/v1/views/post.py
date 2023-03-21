@@ -13,6 +13,26 @@ from accounts.api.v1.serializers.profile import ProfileModelSerializer
 
 
 class PostModelViewSet(ModelViewSet):
+    """
+    Post Model View Set
+    -------------------
+    A user can perform these actions:
+        create
+        retrieve
+        update
+        partial_update
+        destroy
+        who_liked
+        comments
+        like
+        unlike
+        save
+        unsave
+    
+    A admin user can perform all above actions + :
+        list
+    """
+    
     serializer_class = PostModelSerializer
     parser_classes = [MultiPartParser]
     
@@ -28,6 +48,8 @@ class PostModelViewSet(ModelViewSet):
         return Post.objects.all()
     
     def get_object(self):
+        """Overriding for increasing the seen field."""
+        
         obj = super().get_object()
         obj.seen += 1
         obj.save()
@@ -35,6 +57,8 @@ class PostModelViewSet(ModelViewSet):
     
     @action(detail=True, url_path='who-liked')
     def who_liked(self, request, pk):
+        """Get users/profiles that liked the given post."""
+        
         post = get_object_or_404(Post, pk=pk)
         profiles = post.who_liked.all()
         serializer = ProfileModelSerializer(instance=profiles, many=True)
@@ -42,6 +66,8 @@ class PostModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def comments(self, request, pk):
+        """Get the given post's comments."""
+        
         post = get_object_or_404(Post, pk=pk)
         comments = post.comments.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
@@ -49,6 +75,8 @@ class PostModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def like(self, request, pk):
+        """Current user likes the given post."""
+        
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_liked.add(post)
@@ -56,6 +84,8 @@ class PostModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def unlike(self, request, pk):
+        """Current user unlikes the given post."""
+        
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_liked.remove(post)
@@ -63,6 +93,8 @@ class PostModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def save(self, request, pk):
+        """Current user saves the given post."""
+        
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_saved.add(post)
@@ -70,6 +102,8 @@ class PostModelViewSet(ModelViewSet):
     
     @action(detail=True)
     def unsave(self, request, pk):
+        """Current user unsaves the given post."""
+        
         profile = request.user.profile
         post = get_object_or_404(Post, pk=pk)
         profile.posts_saved.remove(post)

@@ -11,19 +11,16 @@ from core.utils import user_6_digit, validate_username
 
 
 class UserManager(BaseUserManager):
+    """Custom User Manager"""
+    
     def _create_user(self, email, password, **extra_fields):
         """
         Create and save a user with the given email, and password.
         """
+        
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        
+        user = self.model(email=email, **extra_fields)        
         user.password = password
-        #
-        # if not extra_fields['is_superuser']:
-        #     validate_password(password)
-        # user.set_password(password)
-        
         user.save(using=self._db)
         return user
     
@@ -46,6 +43,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom User Model
+    """
+    
     # password (8-64) -> .set_password('VALUE')
     # last_login
     
