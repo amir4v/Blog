@@ -6,3 +6,5 @@ __pycache__
 *.png
 db.sqlite3
 EMAILS
+*static*
+*media*
