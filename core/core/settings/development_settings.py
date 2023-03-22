@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-48mhlnd^nfwd_khl+o%e)7srh-!grdoh3krn3m8svphp(x_zm3'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG
+from core.settings import DEBUG
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -51,8 +51,8 @@ INSTALLED_APPS = [
     'accounts',
     'blog',
 ]
-# if DEBUG:
-#     INSTALLED_APPS.append('debug_toolbar')
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,8 +65,8 @@ MIDDLEWARE = [
     
     'action_throttle.middleware.ThrottleMiddleware',
 ]
-# if DEBUG:
-#     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+if DEBUG:
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'core.urls'
 
@@ -165,8 +165,8 @@ EMAIL_HOST_USER = 'admin@admin.admin'
 # Email Backend Configuration
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_FILE_PATH = BASE_DIR / 'EMAILS'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Custom Auth User Model
 USERNAME_MIN_LENGTH = 6
