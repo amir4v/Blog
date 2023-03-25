@@ -1,7 +1,7 @@
-from django.conf import settings
-
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from accounts.models import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -17,6 +17,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         
         self.fields[self.username_field] = serializers.CharField(
             label='Email or Username',
-            min_length=settings.USERNAME_MIN_LENGTH,
-            max_length=settings.USERNAME_MAX_LENGTH
+            min_length=USERNAME_MIN_LENGTH,
+            max_length=USERNAME_MAX_LENGTH
         )

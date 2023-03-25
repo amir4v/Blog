@@ -1,1 +1,1 @@
-from action_throttle.rest import ActionThrottle
+# from action_throttle.rest import ActionThrottle

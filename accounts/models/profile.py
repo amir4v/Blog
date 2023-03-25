@@ -1,17 +1,17 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from .user import User
+User = get_user_model()
 
 
 class Profile(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True, default=None)
-    bio = models.TextField(blank=True, null=True, default=None)
-    birth_date = models.DateField(blank=True, null=True, default=None)
-    location = models.CharField(max_length=64, blank=True, null=True, default=None)
-    status = models.CharField(max_length=32, blank=True, null=True, default=None) # emoji
     avatar = models.CharField(max_length=256, blank=True, null=True, default=None)
+    
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     

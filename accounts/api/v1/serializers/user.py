@@ -4,7 +4,6 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from accounts.api.v1.serializers.profile import ProfileModelSerializer
-from core.utils import validate_username
 
 User = get_user_model()
 
@@ -20,10 +19,11 @@ class UserModelSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password', 'profile']
         read_only_fields = ['profile']
     
-    def validate(self, attrs):
-        username = validate_username(attrs.get('username'))
-        attrs['username'] = username
-        return super().validate(attrs)
+    """Username validation will apply in the save method."""
+    # def validate(self, attrs):
+    #     username = validate_username(attrs.get('username'))
+    #     attrs['username'] = username
+    #     return super().validate(attrs)
 
 
 class LoginModelSerializer(serializers.ModelSerializer):
@@ -67,7 +67,8 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise ValidationError('Passwords do not match!')
         
         if user.check_password(old_password):
-            user.set_password(new_password)
+            """Password validation will apply in the save method."""
+            user = new_password
             user.save()
         else:
             raise ValidationError('Old-Password is incorrect!')
@@ -78,13 +79,14 @@ class ResetPasswordSerializer(serializers.Serializer):
 class ResetUsernameSerializer(serializers.Serializer):
     new_username = serializers.CharField(min_length=6, max_length=32)
     
-    def validate(self, attrs):
-        username = validate_username(attrs.get('username'))
-        attrs['username'] = username
-        user = self.context.get('user')
-        user.username = username
-        user.save()
-        return super().validate(attrs)
+    """Username validation will apply in the save method."""
+    # def validate(self, attrs):
+    #     username = validate_username(attrs.get('username'))
+    #     attrs['username'] = username
+    #     user = self.context.get('user')
+    #     user.username = username
+    #     user.save()
+    #     return super().validate(attrs)
 
 
 class FirstTimeSetPasswordSerializer(serializers.Serializer):
@@ -106,6 +108,7 @@ class FirstTimeSetPasswordSerializer(serializers.Serializer):
         if new_password != confirm_new_password:
             raise ValidationError('Passwords do not match!')
         
-        user.set_password(new_password)
+        """Password validation will apply in the save method."""
+        user = new_password
         user.save()
         return super().validate(attrs)

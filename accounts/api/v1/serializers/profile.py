@@ -5,7 +5,7 @@ from django.core import validators
 from rest_framework import serializers
 
 from accounts.models import Profile
-from core.utils import upload_avatar
+from accounts.utils import upload_avatar
 
 
 class ProfileModelSerializer(serializers.ModelSerializer):
@@ -14,10 +14,6 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     
     name = serializers.CharField(required=False, max_length=128)
-    bio = serializers.CharField(required=False, max_length=1000)
-    birth_date = serializers.DateField(required=False)
-    location = serializers.CharField(required=False, max_length=64)
-    status = serializers.CharField(required=False, max_length=32)
     
     profile_avatar = serializers.ImageField(
         required=False,
@@ -37,8 +33,8 @@ class ProfileModelSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Profile
-        fields = ['id', 'email', 'username', 'name', 'bio', 'birth_date',
-                  'location', 'status', 'profile_avatar', 'avatar']
+        fields = ['id', 'email', 'username', 'name',
+                  'profile_avatar', 'avatar']
         read_only_fields = ['id', 'email', 'username', 'avatar']
     
     def validate(self, attrs):
@@ -53,14 +49,14 @@ class ProfileModelSerializer(serializers.ModelSerializer):
             attrs['avatar'] = path
         attrs.pop('profile_avatar', None)
         
-        birth_date = attrs.get('birth_date', None)
-        if birth_date:
-            """
-            The user age at least must be 13 and birth date must be
-            greater than 1900.
-            """
-            max_year = datetime.now().year-13
-            if birth_date.year < 1900 or birth_date.year > max_year:
-                raise ValueError(f'Birth date year must be between 1900 and {max_year}')
+        # birth_date = attrs.get('birth_date', None)
+        # if birth_date:
+        #     """
+        #     The user age at least must be 13 and birth date must be
+        #     greater than 1900.
+        #     """
+        #     max_year = datetime.now().year-13
+        #     if birth_date.year < 1900 or birth_date.year > max_year:
+        #         raise ValueError(f'Birth date year must be between 1900 and {max_year}')
         
         return super().validate(attrs)

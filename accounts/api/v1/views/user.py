@@ -14,7 +14,7 @@ from accounts.api.v1.serializers import (
     ResetUsernameSerializer,
     UserModelSerializer,
 )
-from core.utils import send_activation_email, IsNotAuthenticated
+from accounts.utils import send_activation_email, IsNotAuthenticated
 
 User = get_user_model()
 

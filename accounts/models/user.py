@@ -7,7 +7,8 @@ from django.contrib.auth.models import (
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 
-from core.utils import user_6_digit, validate_username
+from accounts.validations import validate_username
+from accounts.utils import user_6_digit
 
 
 class UserManager(BaseUserManager):
@@ -65,8 +66,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     
-    created_dt = models.DateTimeField(auto_now_add=True)
-    updated_dt = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     objects = UserManager()
     
