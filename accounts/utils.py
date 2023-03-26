@@ -145,9 +145,9 @@ def upload(uploaded_file, dir, size, res=None, thumbnail_size=None):
         image = image.resize(thumbnail_size)
         thumbnail_path = os.path.join(
                 settings.MEDIA_ROOT,
-                *dir[1:], """When we gave MEDIA_ROOT_BASE_PATH then we
-                             don't need the first folder because MEDIA_ROOT
-                             already gives /media/ folder path."""
+                *dir[1:], # """When we gave MEDIA_ROOT_BASE_PATH then we
+                            # don't need the first folder because MEDIA_ROOT
+                            # already gives /media/ folder path."""
                 'thumbnail',
                 filename
             )
