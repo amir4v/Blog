@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from accounts.models import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
+from accounts.models.config import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

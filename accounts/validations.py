@@ -3,7 +3,7 @@ import re
 
 from rest_framework.serializers import ValidationError
 
-from accounts.models import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
+from accounts.models.config import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
 
 
 def validate_username(username, null=True):

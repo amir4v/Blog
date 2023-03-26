@@ -11,7 +11,7 @@ from rest_framework.permissions import BasePermission
 from celery import shared_task
 from PIL import Image
 
-if settings.get('HOST', None):
+if hasattr(settings, 'HOST'):
     HOST = settings.HOST
 else:
     HOST = 'http://127.0.0.1:8000'
