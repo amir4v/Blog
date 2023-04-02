@@ -4,7 +4,7 @@ services:
     build: .
     command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./core:/app
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -26,7 +26,7 @@ services:
       - backend
 
   db:
-    image: postgres:13.0-alpine
+    image: postgres:13-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -44,7 +44,7 @@ services:
     build: .
     command: celery -A core worker -l INFO
     volumes:
-      - ./core:/app
+      - .:/app
     depends_on:
       - redis
 
