@@ -14,7 +14,7 @@ urlpatterns = [
 
 urlpatterns += [
     path('user/activation/<str:token>/', views.UserActivationAPIView.as_view(), name='user-activation'),
-    path('user/activation-confirm/', views.UserActivationConfirmGenericAPIView.as_view(), name='user-activation-confirm'),
+    # path('user/activation-confirm/', views.UserActivationConfirmGenericAPIView.as_view(), name='user-activation-confirm'),
     
     path('user/forgot-password/', views.ForgotPasswordAPIView.as_view(), name='user-forgot-password'),
     path('user/forgot-password-confirm/', views.ForgotPasswordConfirmGenericAPIView.as_view(), name='user-forgot-password-confirm'),

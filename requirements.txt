@@ -4,6 +4,7 @@ gunicorn
 
 djangorestframework
 djangoactionthrottle
+django-cors-headers
 
 djoser
 djangorestframework_simplejwt
@@ -19,4 +20,6 @@ psycopg2-binary
 
 black
 flake8
+pytest
+pytest-django
 django-debug-toolbar

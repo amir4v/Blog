@@ -109,13 +109,16 @@ class UserActivationConfirmGenericAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data.get("email")
-        user = get_object_or_404(User, email=email)
-        if user.is_verified:
-            return Response(
-                {"detail": "Your account is already verified."},
-                status=status.HTTP_202_ACCEPTED,
-            )
-        send_activation_email(user=user)
+        
+        # user = get_object_or_404(User, email=email)
+        # if user.is_verified:
+        #     return Response(
+        #         {"detail": "Your account is already verified."},
+        #         status=status.HTTP_202_ACCEPTED,
+        #     )
+        
+        # send_activation_email(user=user)
+        send_activation_email(user=User(email=email))
 
         return Response(
             {"detail": "Activation-Confirm email sent successfully."},
