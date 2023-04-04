@@ -11,7 +11,7 @@ class ResetEmailSerializer(serializers.Serializer):
     
     def validate(self, attrs):
         new_email = attrs.get('new_email')
-        confirm_new_email = attrs.get('new_confirm_email')
+        confirm_new_email = attrs.get('confirm_new_email')
         
         if new_email != confirm_new_email:
             raise serializers.ValidationError('Emails do not match!')
