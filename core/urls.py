@@ -15,7 +15,7 @@ urlpatterns = [
 
     # path('', TemplateView(template_name='home-index.html'), name='home-index'), # TODO: Home-Index entry.
 
-    path('accounts/api/v1/user' + settings.LOGIN_URL, CustomTokenObtainPairView.as_view(), name='login'), # accounts.api.v1 -> login
+    path('accounts/api/v1/user' + settings.LOGIN_URL, CustomTokenObtainPairView.as_view(), name='accounts-api-v1-user-login'), # accounts.api.v1 -> login
     path(settings.LOGIN_URL[1:], CustomTokenObtainPairView.as_view(), name='login'), # accounts.api.v1 -> login
 
     path('accounts/', include('accounts.urls'), name='accounts'),

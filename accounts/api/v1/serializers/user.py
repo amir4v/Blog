@@ -77,7 +77,7 @@ class ResetPasswordSerializer(serializers.Serializer):
         
         if user.check_password(old_password):
             """Password validation will apply in the save method."""
-            user = new_password
+            user.password = new_password
             user.save()
         else:
             raise ValidationError('Old-Password is incorrect!')
@@ -118,6 +118,6 @@ class FirstTimeSetPasswordSerializer(serializers.Serializer):
             raise ValidationError('Passwords do not match!')
         
         """Password validation will apply in the save method."""
-        user = new_password
+        user.password = new_password
         user.save()
         return super().validate(attrs)
