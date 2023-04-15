@@ -56,7 +56,7 @@ class TestProfile:
         
         data = {
             'name': 'test-name',
-            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/google.png', 'rb')
+            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/image.png', 'rb')
         }
         
         request = api_request_factory.put(update_path, data=data)
@@ -76,11 +76,11 @@ class TestProfile:
             'name': 'test-name-1',
         }
         data_2 = {
-            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/google.png', 'rb')
+            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/image.png', 'rb')
         }
         data_3 = {
             'name': 'test-name-3',
-            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/google.png', 'rb')
+            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/image.png', 'rb')
         }
         
         request = api_request_factory.patch(update_path, data=data_1)
