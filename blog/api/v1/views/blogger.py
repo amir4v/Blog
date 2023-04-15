@@ -45,7 +45,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         posts = profile.posts_saved.all()
         serializer = PostModelSerializer(instance=posts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False)
     def categories(self, request):
@@ -54,7 +54,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         categories = profile.categories.all()
         serializer = CategoryModelSerializer(instance=categories, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True, url_path='category-posts')
     def category_posts(self, request, pk):
@@ -64,7 +64,7 @@ class BloggerViewSet(ViewSet):
         category = get_object_or_404(Category, profile=profile, pk=pk)
         posts = category.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False)
     def posts(self, request):
@@ -73,7 +73,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         posts = profile.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False, url_path='liked-posts')
     def liked_posts(self, request):
@@ -82,7 +82,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         posts = profile.posts_liked.all()
         serializer = PostModelSerializer(instance=posts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False, url_path='comments')
     def comments(self, request):
@@ -91,7 +91,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         comments = profile.comments.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False, url_path='liked-comments')
     def liked_comments(self, request):
@@ -100,7 +100,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         comments = profile.comments_liked.all()
         serializer = CommentModelSerializer(instance=comments, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True)
     def follow(self, request, pk):
@@ -131,7 +131,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         fs = profile.followers.all()
         serializer = ProfileModelSerializer(instance=fs, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False)
     def followings(self, request):
@@ -140,7 +140,7 @@ class BloggerViewSet(ViewSet):
         profile = request.user.profile
         fs = profile.followings.all()
         serializer = ProfileModelSerializer(instance=fs, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True, url_path='do-i-follow-you')
     def do_i_follow_you(self, request, pk):

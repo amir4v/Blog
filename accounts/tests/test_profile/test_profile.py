@@ -1,8 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.conf import settings
 
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APIRequestFactory
+from rest_framework.test import force_authenticate
 import pytest
+import requests
+
+from accounts.api.v1.views.profile import ProfileModelViewSet
 
 User = get_user_model()
 
@@ -13,50 +18,88 @@ def api_client():
 
 
 @pytest.fixture
+def api_request_factory():
+    return APIRequestFactory()
+
+
+@pytest.fixture
+def password():
+    return 'a/@12345678'
+
+
+@pytest.fixture
 def user(password):
     return User.objects.create_superuser(email='test@example.com', password=password, is_active=True)
 
 
 @pytest.mark.django_db
 class TestProfile:
-    def test_retrieve_a_user_response_status_200(self, api_client, user):
-        retrieve_path = reverse('accounts:api-v1:user-detail', args=[user.pk])
+    def test_retrieve_a_profile_response_status_200(self, api_client, user):
+        retrieve_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
         api_client.force_login(user)
         response = api_client.get(retrieve_path)
         assert response.status_code == 200
     
-    def test_list_of_users_response_status_200(self, api_client, user):
-        list_path = reverse('accounts:api-v1:user-list')
+    def test_list_of_profiles_response_status_200(self, api_client, user):
+        list_path = reverse('accounts:api-v1:profile-list')
         api_client.force_login(user)
         response = api_client.get(list_path)
         assert response.status_code == 200
     
-    def test_create_a_user_response_status_201(self, api_client, user):
-        create_path = reverse('accounts:api-v1:user-list')
-        api_client.force_login(user)
+    # def test_create_a_profile_response_status_201(self, api_client, user):
+    #     pass
+    
+    def test_update_a_profile_response_status_200(self, api_request_factory, user):
+        update_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
+        
+        view = ProfileModelViewSet.as_view({'put': 'update'})
+        
         data = {
-            'email': 'create-user-test@example.com',
-            'password': 'asdf1234!@#$',
-            'confirm_password': 'asdf1234!@#$',
+            'name': 'test-name',
+            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/google.png', 'rb')
         }
-        response = api_client.post(create_path, data=data)
-        assert response.status_code == 201
+        
+        request = api_request_factory.put(update_path, data=data)
+        
+        force_authenticate(request, user=user)
+        
+        response = view(request, pk=user.pk)
+        
+        assert response.status_code == 200
     
-    def test_update_a_user_response_status_405(self, api_client, user):
-        update_path = reverse('accounts:api-v1:user-detail', args=[user.pk])
-        api_client.force_login(user)
-        data = {
-            'email': 'update-user-test@example.com',
-            'password': 'asdf1234!@#$',
-            'confirm_password': 'asdf1234!@#$',
+    def test_partial_update_a_profile_response_status_200(self, api_request_factory, user):
+        update_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
+        
+        view = ProfileModelViewSet.as_view({'patch': 'partial_update'})
+        
+        data_1 = {
+            'name': 'test-name-1',
         }
-        response = api_client.post(update_path, data=data)
-        assert response.status_code == 405
+        data_2 = {
+            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/google.png', 'rb')
+        }
+        data_3 = {
+            'name': 'test-name-3',
+            'profile_avatar': open(settings.BASE_DIR / 'accounts/tests/test_profile/google.png', 'rb')
+        }
+        
+        request = api_request_factory.patch(update_path, data=data_1)
+        force_authenticate(request, user=user)
+        response = view(request, pk=user.pk)
+        assert response.status_code == 200
+        
+        request = api_request_factory.patch(update_path, data=data_2)
+        force_authenticate(request, user=user)
+        response = view(request, pk=user.pk)
+        assert response.status_code == 200
+        
+        request = api_request_factory.patch(update_path, data=data_3)
+        force_authenticate(request, user=user)
+        response = view(request, pk=user.pk)
+        assert response.status_code == 200
     
-    # def test_partial_update_a_user_response_status_405
-    
-    def test_delete_a_user_response_status_200(self, api_client, user):
-        delete_path = reverse('accounts:api-v1:user-detail', args=[user.pk])
+    def test_delete_a_profile_response_status_200(self, api_client, user):
+        delete_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
         api_client.force_login(user)
         response = api_client.get(delete_path)
         assert response.status_code == 200
