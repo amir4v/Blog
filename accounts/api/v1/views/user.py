@@ -70,9 +70,10 @@ class UserModelViewSet(ModelViewSet):
             return ResetUsernameSerializer
         return UserModelSerializer
     
-    def post(self, request):
+    def create(self, request):
         """
-        Overriding post method because we changed the default User model
+        POST
+        Overriding create method because we changed the default User model
         and want to prevent unknown errors.
         """
         

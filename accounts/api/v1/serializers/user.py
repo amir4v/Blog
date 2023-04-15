@@ -12,18 +12,27 @@ class UserModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=False, max_length=32)
     password = serializers.CharField(min_length=8, max_length=64,
                                      write_only=True)
+    confirm_password = serializers.CharField(min_length=8, max_length=64,
+                                     write_only=True)
     profile = ProfileModelSerializer(read_only=True)
     
     class Meta:
         model = User
-        fields = ['email', 'username', 'password', 'profile']
+        fields = ['email', 'username', 'password', 'confirm_password', 'profile']
         read_only_fields = ['profile']
     
     """Username validation will apply in the save method."""
-    # def validate(self, attrs):
-    #     username = validate_username(attrs.get('username'))
-    #     attrs['username'] = username
-    #     return super().validate(attrs)
+    def validate(self, attrs):
+        # username = validate_username(attrs.get('username'))
+        # attrs['username'] = username
+        
+        password = attrs.get('password')
+        confirm_password = attrs.get('confirm_password')
+        if password != confirm_password:
+            raise ValidationError('Passwords do not match!')
+        attrs.pop('confirm_password', None)
+        
+        return super().validate(attrs)
 
 
 class LoginModelSerializer(serializers.ModelSerializer):
