@@ -19,7 +19,8 @@ def password():
 
 @pytest.fixture
 def user(password) -> User:
-    return User.objects.create_superuser(email='test@example.com', password=password, is_active=True)
+    return User.objects.create_superuser(email='test@example.com',
+                                         password=password, is_active=True)
 
 
 @pytest.mark.django_db

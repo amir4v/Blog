@@ -19,7 +19,8 @@ def password():
 
 @pytest.fixture
 def user(password):
-    return User.objects.create_superuser(email='test@example.com', password=password, is_active=True)
+    return User.objects.create_superuser(email='test@example.com',
+                                         password=password, is_active=True)
 
 
 @pytest.mark.django_db
@@ -48,6 +49,8 @@ class TestUserCRUD:
         assert response.status_code == 201
     
     def test_update_a_user_response_status_405(self, api_client, user):
+        """Must be tested with APIRequestFactory"""
+        
         update_path = reverse('accounts:api-v1:user-detail', args=[user.pk])
         api_client.force_login(user)
         data = {
@@ -55,6 +58,8 @@ class TestUserCRUD:
             'password': 'asdf1234!@#$',
             'confirm_password': 'asdf1234!@#$',
         }
+        
+        """Even with .put or .patch you'll still receive 405"""
         response = api_client.post(update_path, data=data)
         assert response.status_code == 405
     

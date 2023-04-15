@@ -5,7 +5,6 @@ from django.conf import settings
 from rest_framework.test import APIClient, APIRequestFactory
 from rest_framework.test import force_authenticate
 import pytest
-import requests
 
 from accounts.api.v1.views.profile import ProfileModelViewSet
 
@@ -29,13 +28,15 @@ def password():
 
 @pytest.fixture
 def user(password):
-    return User.objects.create_superuser(email='test@example.com', password=password, is_active=True)
+    return User.objects.create_superuser(email='test@example.com',
+                                         password=password, is_active=True)
 
 
 @pytest.mark.django_db
 class TestProfile:
     def test_retrieve_a_profile_response_status_200(self, api_client, user):
-        retrieve_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
+        retrieve_path = reverse('accounts:api-v1:profile-detail',
+                                args=[user.pk])
         api_client.force_login(user)
         response = api_client.get(retrieve_path)
         assert response.status_code == 200

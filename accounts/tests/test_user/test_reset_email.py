@@ -21,20 +21,20 @@ def password():
 
 @pytest.fixture
 def user(password):
-    return User.objects.create_superuser(email='test@example.com', password=password, is_active=True)
+    return User.objects.create_superuser(email='test@example.com',
+                                         password=password, is_active=True)
 
 
 @pytest.mark.django_db
 class TestResetEmail:
     def test_reset_email_send_link_response_status_200(self, api_client, user):
         reset_email_path = reverse('accounts:api-v1:user-reset-email')
-        
-        data = {'new_email': 'test-mail@example.com', 'confirm_new_email': 'test-mail@example.com'}
-        
+        data = {
+            'new_email': 'test-mail@example.com',
+            'confirm_new_email': 'test-mail@example.com'
+        }
         api_client.force_login(user)
-        
         response = api_client.post(reset_email_path, data)
-        
         assert response.status_code == 200
         
         user.email = data.get('new_email')
@@ -43,11 +43,8 @@ class TestResetEmail:
     
     def test_reset_email_verify_response_status_200(self, api_client, user):
         token = self.test_reset_email_send_link_response_status_200(api_client, user)
-        
-        reset_email_verify_path = reverse('accounts:api-v1:user-reset-email-verify', args=[token])
-                
+        reset_email_verify_path = reverse('accounts:api-v1:user-reset-email-verify',
+                                          args=[token])
         api_client.force_login(user)
-        
         response = api_client.get(reset_email_verify_path)
-        
         assert response.status_code == 200

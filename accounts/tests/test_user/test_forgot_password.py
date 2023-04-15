@@ -21,7 +21,8 @@ def password():
 
 @pytest.fixture
 def user(password):
-    return User.objects.create_superuser(email='test@example.com', password=password, is_active=True)
+    return User.objects.create_superuser(email='test@example.com',
+                                         password=password, is_active=True)
 
 
 @pytest.mark.django_db
@@ -43,9 +44,7 @@ class TestForgotPassword:
     
     def test_forgot_password_verify_response_status_200(self, api_client, user):
         token = self.test_forgot_password_confirm_for_unauthenticated_user_response_status_200(api_client, user)
-        
-        forgot_password_verify_path = reverse('accounts:api-v1:user-forgot-password-verify', args=[token])
-        
+        forgot_password_verify_path = reverse('accounts:api-v1:user-forgot-password-verify',
+                                              args=[token])
         response = api_client.get(forgot_password_verify_path)
-        
         assert response.status_code == 200
