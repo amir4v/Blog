@@ -54,7 +54,9 @@ class PostModelSerializer(serializers.ModelSerializer):
             attrs['banner'] = path
         attrs.pop('banner_image', None)
         
-        if not user_profile.categories.filter(pk=category.pk).exists():
+        if not (
+            user.is_superuser or user_profile.categories.filter(pk=category.pk).exists()
+        ):
             """
             The given category for this post must be one of
             current user categories to prevent it from a user create a post

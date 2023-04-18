@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
 
+from rest_framework import permissions
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from rest_framework import permissions
 
 from blog.models import Category
 from blog.api.v1.serializers import (
@@ -48,4 +49,4 @@ class CategoryModelViewSet(ModelViewSet):
         category = get_object_or_404(Category, pk=pk)
         posts = category.posts.all()
         serializer = PostModelSerializer(instance=posts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)

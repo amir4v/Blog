@@ -215,15 +215,17 @@ DEFAULT_THROTTLE_RATE = {
     'user': '50/100:s',
 }
 
+REDIS_ADDRESS = '127.0.0.1:6379'
+
 # CELERY
-CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_BROKER_URL = f"redis://{REDIS_ADDRESS}/0"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_ADDRESS}/0"
 
 # CACHE
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        'LOCATION': 'redis://redis:6379/1',
+        'LOCATION': f"redis://{REDIS_ADDRESS}/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },

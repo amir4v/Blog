@@ -33,8 +33,8 @@ def user(password):
 
 
 @pytest.mark.django_db
-class TestProfile:
-    def test_retrieve_a_profile_response_status_200(self, api_client, user):
+class TestProfileCRUD:
+    def test_retrieve_profile_response_status_200(self, api_client, user):
         retrieve_path = reverse('accounts:api-v1:profile-detail',
                                 args=[user.pk])
         api_client.force_login(user)
@@ -47,10 +47,10 @@ class TestProfile:
         response = api_client.get(list_path)
         assert response.status_code == 200
     
-    # def test_create_a_profile_response_status_201(self, api_client, user):
+    # def test_create_profile_response_status_201(self, api_client, user):
     #     pass
     
-    def test_update_a_profile_response_status_200(self, api_request_factory, user):
+    def test_update_profile_response_status_200(self, api_request_factory, user):
         update_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
         
         view = ProfileModelViewSet.as_view({'put': 'update'})
@@ -68,7 +68,7 @@ class TestProfile:
         
         assert response.status_code == 200
     
-    def test_partial_update_a_profile_response_status_200(self, api_request_factory, user):
+    def test_partial_update_profile_response_status_200(self, api_request_factory, user):
         update_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
         
         view = ProfileModelViewSet.as_view({'patch': 'partial_update'})
@@ -99,7 +99,7 @@ class TestProfile:
         response = view(request, pk=user.pk)
         assert response.status_code == 200
     
-    def test_delete_a_profile_response_status_200(self, api_client, user):
+    def test_delete_profile_response_status_200(self, api_client, user):
         delete_path = reverse('accounts:api-v1:profile-detail', args=[user.pk])
         api_client.force_login(user)
         response = api_client.get(delete_path)

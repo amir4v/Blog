@@ -52,7 +52,7 @@ class TestFollowingSystem:
         profile_a.followers.add(profile_b)
         assert profile_a.followers.filter(pk=profile_b).exists() == True
         
-        followers_path = reverse('blog:api-v1:blogger-followers')
+        followers_path = reverse('accounts:api-v1:profile-followers')
         api_client.force_login(profile_a.user)
         response = api_client.get(followers_path)
         assert response.status_code == 200
@@ -61,7 +61,7 @@ class TestFollowingSystem:
         profile_a.followings.add(profile_b)
         assert profile_a.followings.filter(pk=profile_b).exists() == True
         
-        followings_path = reverse('blog:api-v1:blogger-followings')
+        followings_path = reverse('accounts:api-v1:profile-followings')
         api_client.force_login(profile_a.user)
         response = api_client.get(followings_path)
         assert response.status_code == 200
@@ -69,7 +69,7 @@ class TestFollowingSystem:
     def test_do_i_follow_you_response_status_200(self, api_client, profile_a, profile_b):
         profile_a.followings.add(profile_b)
         
-        follow_path = reverse('blog:api-v1:blogger-do-i-follow-you',
+        follow_path = reverse('accounts:api-v1:profile-do-i-follow-you',
                               args=[profile_b.pk])
         api_client.force_login(profile_a.user)
         response = api_client.get(follow_path)
@@ -78,7 +78,7 @@ class TestFollowingSystem:
     def test_do_you_follow_me_response_status_200(self, api_client, profile_a, profile_b):
         profile_a.followers.add(profile_b)
         
-        follow_path = reverse('blog:api-v1:blogger-do-you-follow-me',
+        follow_path = reverse('accounts:api-v1:profile-do-you-follow-me',
                               args=[profile_b.pk])
         api_client.force_login(profile_a.user)
         response = api_client.get(follow_path)
